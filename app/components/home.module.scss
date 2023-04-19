@@ -216,7 +216,17 @@
 }
 
 .sidebar-action:not(:last-child) {
-  margin-right: 15px;
+  margin-right: 10px;
+}
+
+.user-name {
+  margin-left: 5px;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-top: 10px;
+  font-family: inherit;
 }
 
 .chat {
@@ -444,6 +454,45 @@
   position: absolute;
   right: 30px;
   bottom: 32px;
+}
+
+.chat-login {
+  height: 100%;
+  width: 100%;
+  border-radius: 10px;
+  border: var(--border-in-light);
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03);
+  background-color: var(--primary);
+  color: white;
+  font-family: inherit;
+  font-size: 20px;
+  padding: 24px;
+  cursor: pointer;
+  resize: none;
+  outline: none;
+  z-index: 100;
+}
+
+.chat-login-panel {
+  width: 480px;
+  height: 416px;
+  border-radius: 10px;
+  border: var(--border-in-light);
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03);
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-left: -240px;
+  margin-top: -208px;
+  padding: 10px;
+  background-color: white;
+  z-index: 1000;
+}
+
+.chat-login-panel-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 
 @media only screen and (max-width: 600px) {

@@ -13,6 +13,8 @@ import ChatGptIcon from "../icons/chatgpt.svg";
 
 import BotIcon from "../icons/bot.svg";
 import AddIcon from "../icons/add.svg";
+import UserIcon from "../icons/brain.svg";
+import LogoutIcon from "../icons/close.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 
@@ -143,6 +145,7 @@ function _Home() {
   const chatStore = useChatStore();
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
+  const [userInfo, setUserInfo] = useState({ userId: "", userName: Locale.Home.NoLogin });
 
   // setting
   const [openSettings, setOpenSettings] = useState(false);
@@ -150,6 +153,22 @@ function _Home() {
 
   // drag side bar
   const { onDragMouseDown } = useDragSideBar();
+
+  const getCurrentUser = () => {
+    if (!userInfo.userId) {
+      const currentUser = localStorage.getItem("current_user");
+      if (currentUser) {
+        return JSON.parse(currentUser);
+      }
+    }
+    return userInfo;
+  }
+
+  const logout = () => {
+    localStorage.removeItem("ww_code")
+    localStorage.removeItem("current_user")
+    setUserInfo({ userId: "", userName: Locale.Home.NoLogin })
+  }
 
   useSwitchTheme();
 
@@ -207,10 +226,20 @@ function _Home() {
               />
             </div>
             <div className={styles["sidebar-action"]}>
-              <a href={REPO_URL} target="_blank">
-                <IconButton icon={<GithubIcon />} shadow />
-              </a>
+              <IconButton
+                icon={<UserIcon />}
+                text={getCurrentUser().userName}
+              />
             </div>
+            {!!getCurrentUser().userId && (
+            <div className={styles["sidebar-action"]}>
+              <IconButton
+                icon={<LogoutIcon />}
+                onClick={logout}
+                title={Locale.Home.Logout}
+              />
+            </div>
+            )}
           </div>
           <div>
             <IconButton
@@ -243,6 +272,7 @@ function _Home() {
           <Chat
             key="chat"
             showSideBar={() => setShowSideBar(true)}
+            onLogin={setUserInfo}
             sideBarShowing={showSideBar}
           />
         )}

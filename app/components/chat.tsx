@@ -13,6 +13,9 @@ import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
+import CloseIcon from "../icons/close.svg";
+
+import * as ww from '@wecom/jssdk';
 
 import {
   Message,
@@ -38,12 +41,14 @@ import dynamic from "next/dynamic";
 import { ControllerPool } from "../requests";
 import { Prompt, usePromptStore } from "../store/prompt";
 import Locale from "../locales";
+import Wecom from "../config/wecom";
 
 import { IconButton } from "./button";
 import styles from "./home.module.scss";
 import chatStyle from "./chat.module.scss";
 
 import { Input, Modal, showModal } from "./ui-lib";
+import { TRUE } from "sass";
 
 const Markdown = dynamic(
   async () => memo((await import("./markdown")).Markdown),
@@ -334,6 +339,7 @@ function useScrollToBottom() {
 
 export function Chat(props: {
   showSideBar?: () => void;
+  onLogin?: (user: any) => void;
   sideBarShowing?: boolean;
 }) {
   type RenderMessage = Message & { preview?: boolean };
@@ -345,13 +351,19 @@ export function Chat(props: {
   ]);
   const fontSize = useChatStore((state) => state.config.fontSize);
 
+  const hasLoginUser = () => {
+    return !!localStorage.getItem("current_user");
+  }
+
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [userInput, setUserInput] = useState("");
   const [beforeInput, setBeforeInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll } = useScrollToBottom();
-  const [hitBottom, setHitBottom] = useState(false);
+  const [hitBottom, setHitBottom] = useState(false);  
+  const [isLogin, setIsLogin] = useState(hasLoginUser());  
+  const [isShowLoginPanel, setIsShowLoginPanel] = useState(false);
 
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 20;
@@ -483,6 +495,55 @@ export function Chat(props: {
       }
     }
   };
+
+  let wwLogin : any;
+  const wwLoginOptions : any = {
+    el: "#ww_login",
+    params: {
+        login_type: "CorpApp",
+        appid: Wecom.CorpId,
+        agentid: Wecom.AgentId,
+        redirect_uri: Wecom.RedirectUri,
+        state: "IdeaAI",
+        redirect_type: "callback"
+    },
+    onCheckWeComLogin(data: any) {
+        console.log(data.isWeComLogin);
+    },
+    onLoginSuccess(data: any) {
+        localStorage.setItem('ww_code', data.code);
+        !!wwLogin && wwLogin.unmount();
+
+        try {
+          fetch(Wecom.UserInfoApi, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ "text": data.code }),
+          }).then(res => res.json()).then(res => {
+            const user = { userId: res.result.userid, userName: res.result.username }
+            props.onLogin && props.onLogin(user);
+            localStorage.setItem("current_user", JSON.stringify(user));
+            setIsShowLoginPanel(false)
+            setIsLogin(true);
+          }).catch(err => console.error(err));
+        } catch (err : any) {
+          alert(err.message)
+        }
+      },
+      onLoginFail(err: any) {
+          console.log(err)
+          !!wwLogin && wwLogin.unmount()
+      },
+  }
+
+  useEffect(() => {
+    if (isShowLoginPanel) {
+      console.log(JSON.stringify(wwLoginOptions))
+      wwLogin = ww.createWWLoginPanel(wwLoginOptions)
+    } else {
+      !!wwLogin && wwLogin.unmount();
+    }
+  }, [isShowLoginPanel]);
 
   const config = useChatStore((state) => state.config);
 
@@ -700,8 +761,20 @@ export function Chat(props: {
             </div>
           );
         })}
+
+        {isShowLoginPanel && (
+        <div id="ww_login" className={styles["chat-login-panel"]}>
+          <div className={styles["chat-login-panel-close"]}>
+            <IconButton
+              icon={<CloseIcon />}
+              onClick={() => setIsShowLoginPanel(false)}
+            />
+          </div>
+        </div>
+        )}
       </div>
 
+      { (isLogin && hasLoginUser()) ? (
       <div className={styles["chat-input-panel"]}>
         <PromptHints prompts={promptHints} onPromptSelect={onPromptSelect} />
         <div className={styles["chat-input-panel-inner"]}>
@@ -729,6 +802,13 @@ export function Chat(props: {
           />
         </div>
       </div>
+      ) : (
+      <div className={styles["chat-input-panel"]}>
+        <div className={styles["chat-input-panel-inner"]}>
+          <button className={styles["chat-login"] + " clickable"} onClick={() => setIsShowLoginPanel(true)}>{Locale.Chat.Login}</button>
+        </div>
+      </div>
+      )}
     </div>
   );
 }

@@ -28,6 +28,8 @@ const cn = {
       return inputHints + "，/ 触发补全";
     },
     Send: "发送",
+    Login: "企业微信扫码登录",
+    NoLogin: "未登录",
   },
   Export: {
     Title: "导出聊天记录为 Markdown",
@@ -49,6 +51,8 @@ const cn = {
     DeleteChat: "确认删除选中的对话？",
     DeleteToast: "已删除会话",
     Revert: "撤销",
+    Logout: "退出",
+    NoLogin: "未登录",
   },
   Settings: {
     Title: "设置",
