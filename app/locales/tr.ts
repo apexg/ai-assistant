@@ -30,6 +30,8 @@ const tr: LocaleType = {
       return inputHints + ", komutları aramak için / (eğik çizgi)";
     },
     Send: "Gönder",
+    Login: "QR Code Sign-In With WeCom",
+    NoLogin: "Exited",
   },
   Export: {
     Title: "Tüm Mesajlar",
@@ -52,6 +54,8 @@ const tr: LocaleType = {
     DeleteChat: "Seçili sohbeti silmeyi onaylıyor musunuz?",
     DeleteToast: "Sohbet Silindi",
     Revert: "Geri Al",
+    Logout: "Logout",
+    NoLogin: "Exited",
   },
   Settings: {
     Title: "Ayarlar",

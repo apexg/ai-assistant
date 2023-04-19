@@ -30,6 +30,8 @@ const it: LocaleType = {
       return inputHints;
     },
     Send: "Invia",
+    Login: "QR Code Sign-In With WeCom",
+    NoLogin: "Exited",
   },
   Export: {
     Title: "Tutti i messaggi",
@@ -52,6 +54,8 @@ const it: LocaleType = {
     DeleteChat: "Confermare la cancellazione della conversazione selezionata?",
     DeleteToast: "Chat Deleted",
     Revert: "Revert",
+    Logout: "Logout",
+    NoLogin: "Exited",
   },
   Settings: {
     Title: "Impostazioni",

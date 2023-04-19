@@ -29,6 +29,8 @@ const tw: LocaleType = {
       return inputHints;
     },
     Send: "發送",
+    Login: "企業微信掃碼登錄",
+    NoLogin: "未登錄",
   },
   Export: {
     Title: "匯出聊天記錄為 Markdown",
@@ -50,6 +52,8 @@ const tw: LocaleType = {
     DeleteChat: "確定要刪除選取的對話嗎？",
     DeleteToast: "已刪除對話",
     Revert: "撤銷",
+    Logout: "退出",
+    NoLogin: "未登錄",
   },
   Settings: {
     Title: "設定",
