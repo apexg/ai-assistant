@@ -500,40 +500,36 @@ export function Chat(props: {
   const wwLoginOptions : any = {
     el: "#ww_login",
     params: {
-        login_type: "CorpApp",
-        appid: Wecom.CorpId,
-        agentid: Wecom.AgentId,
-        redirect_uri: Wecom.RedirectUri,
-        state: "IdeaAI",
-        redirect_type: "callback"
+      login_type: "CorpApp",
+      appid: Wecom.CorpId,
+      agentid: Wecom.AgentId,
+      redirect_uri: Wecom.RedirectUri,
+      state: "IdeaAI",
+      redirect_type: "callback"
     },
     onCheckWeComLogin(data: any) {
-        console.log(data.isWeComLogin);
+      console.log(data.isWeComLogin);
     },
     onLoginSuccess(data: any) {
-        localStorage.setItem('ww_code', data.code);
-        !!wwLogin && wwLogin.unmount();
+      localStorage.setItem('ww_code', data.code);
+      !!wwLogin && wwLogin.unmount();
 
-        try {
-          fetch(Wecom.UserInfoApi, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ "text": data.code }),
-          }).then(res => res.json()).then(res => {
-            const user = { userId: res.result.userid, userName: res.result.username }
-            props.onLogin && props.onLogin(user);
-            localStorage.setItem("current_user", JSON.stringify(user));
-            setIsShowLoginPanel(false)
-            setIsLogin(true);
-          }).catch(err => console.error(err));
-        } catch (err : any) {
-          alert(err.message)
-        }
+      fetch(Wecom.UserInfoApi, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ "text": data.code }),
+      }).then(res => res.json()).then(res => {
+        const user = { userId: res.result.userid, userName: res.result.username }
+        setIsShowLoginPanel(false)
+        setIsLogin(true);
+        props.onLogin && props.onLogin(user);
+        localStorage.setItem("current_user", JSON.stringify(user));
+      }).catch(err => console.error(err));
       },
       onLoginFail(err: any) {
-          console.log(err)
-          !!wwLogin && wwLogin.unmount()
-      },
+        console.log(err)
+        !!wwLogin && wwLogin.unmount()
+    }
   }
 
   useEffect(() => {
