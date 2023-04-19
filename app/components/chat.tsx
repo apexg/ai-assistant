@@ -525,10 +525,10 @@ export function Chat(props: {
         props.onLogin && props.onLogin(user);
         localStorage.setItem("current_user", JSON.stringify(user));
       }).catch(err => console.error(err));
-      },
-      onLoginFail(err: any) {
-        console.log(err)
-        !!wwLogin && wwLogin.unmount()
+    },
+    onLoginFail(err: any) {
+      console.log(err)
+      !!wwLogin && wwLogin.unmount()
     }
   }
 
