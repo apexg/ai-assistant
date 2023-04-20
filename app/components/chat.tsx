@@ -1,5 +1,6 @@
 import { useDebounce, useDebouncedCallback } from "use-debounce";
 import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
+import { showToast } from "./ui-lib";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -351,8 +352,16 @@ export function Chat(props: {
   ]);
   const fontSize = useChatStore((state) => state.config.fontSize);
 
+  const getCurrentUser = () => {
+    const userStorage = localStorage.getItem("current_user");
+    if (userStorage) {
+      return JSON.parse(userStorage);
+    }
+    return null;
+  }
+  
   const hasLoginUser = () => {
-    return !!localStorage.getItem("current_user");
+    return !!getCurrentUser();
   }
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -447,6 +456,18 @@ export function Chat(props: {
     setPromptHints([]);
     if (!isMobileScreen()) inputRef.current?.focus();
     setAutoScroll(true);
+    
+    fetch(Wecom.UserHeartbeatApi, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ "user_id": getCurrentUser()?.userId }),
+    }).then(res => res.json()).then(res => {
+      if (res.result) {
+        console.log(Locale.Chat.UserHeartbeatSuccess);
+      } else {
+        console.log(Locale.Chat.UserHeartbeatFail);
+      }
+    }).catch(err => console.error(err));
   };
 
   // stop response
@@ -520,11 +541,16 @@ export function Chat(props: {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ "text": data.code }),
       }).then(res => res.json()).then(res => {
-        const user = { userId: res.result.userid, userName: res.result.username }
-        setIsShowLoginPanel(false)
-        setIsLogin(true);
-        props.onLogin && props.onLogin(user);
-        localStorage.setItem("current_user", JSON.stringify(user));
+        if (res.result && res.result.userid) {
+          const user = { userId: res.result.userid, userName: res.result.username }
+          setIsShowLoginPanel(false)
+          setIsLogin(true);
+          props.onLogin && props.onLogin(user);
+          localStorage.setItem("current_user", JSON.stringify(user));
+        } else {
+          setIsShowLoginPanel(false)
+          showToast(Locale.Chat.NoUser, undefined, 5000);
+        }
       }).catch(err => console.error(err));
     },
     onLoginFail(err: any) {
@@ -761,7 +787,7 @@ export function Chat(props: {
 
         {isShowLoginPanel && (
         <div id="ww_login" className={styles["chat-login-panel"]}>
-          <div className={styles["chat-login-panel-close"]}>
+          <div className={styles["panel-close"]}>
             <IconButton
               icon={<CloseIcon />}
               onClick={() => setIsShowLoginPanel(false)}

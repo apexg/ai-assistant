@@ -3,6 +3,7 @@
 require("../polyfill");
 
 import { useState, useEffect, useRef } from "react";
+import { showToast } from "./ui-lib";
 
 import { IconButton } from "./button";
 import styles from "./home.module.scss";
@@ -26,6 +27,8 @@ import { Chat } from "./chat";
 import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
 import { ErrorBoundary } from "./error";
+import { setInterval } from "timers";
+import Wecom from "../config/wecom";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -146,6 +149,10 @@ function _Home() {
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
   const [userInfo, setUserInfo] = useState({ userId: "", userName: Locale.Home.NoLogin });
+  const [statInfo, setStatInfo] = useState({ online_users_count: 0, total_request_count: 0 });
+  const [isShowStatList, setIsShowStatList] = useState(false);
+  const [statTime, setStatTime] = useState(1);
+  const [statList, setStatList] = useState({ online_users_count: 0, total_request_count:0, user_requests_detail: [] });
 
   // setting
   const [openSettings, setOpenSettings] = useState(false);
@@ -153,7 +160,7 @@ function _Home() {
 
   // drag side bar
   const { onDragMouseDown } = useDragSideBar();
-
+  const userTimer = useRef<NodeJS.Timeout>();
   const getCurrentUser = () => {
     if (!userInfo.userId) {
       const currentUser = localStorage.getItem("current_user");
@@ -169,6 +176,64 @@ function _Home() {
     localStorage.removeItem("current_user")
     setUserInfo({ userId: "", userName: Locale.Home.NoLogin })
   }
+
+  const loadStatSummary = () => {
+    if (!!getCurrentUser().userId) {
+      fetch(Wecom.OnlineUserApi, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ "recent_minutes": 1, "user_code": localStorage.getItem("ww_code") }),
+      }).then(res => res.json()).then(res => {
+        if (res.result) {
+          if (res.result.isKicked) {
+            showToast(Locale.Home.Offline, undefined, 10000);
+          } else {
+            setStatInfo(res.result)
+          }
+        } else {
+          console.log(Locale.Home.GetOnlineUserSummaryFail);
+        }
+      }).catch(err => console.error(err));
+    }
+  }
+
+  const loadStatList = (evt : any) => {
+    let recent_minutes = 1;
+    if (typeof(evt) === "number") {
+      recent_minutes = evt;
+    } else {
+      recent_minutes = parseInt(evt.currentTarget.value);
+      evt.currentTarget.blur();
+      setStatTime(recent_minutes);
+    }
+    
+    fetch(Wecom.OnlineUserListApi, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ recent_minutes }),
+    }).then(res => res.json()).then(res => {
+      if (res.result) {
+        setStatList(res.result)
+      } else {
+        showToast(Locale.Home.GetOnlineStatListFail, undefined, 5000);
+      }
+    }).catch(err => console.error(err));
+  }
+
+  const showStatList = () => {    
+    if (!!getCurrentUser().userId) {
+      setIsShowStatList(true);
+      loadStatList(statTime);
+    } else {
+      showToast(Locale.Home.NoLogin, undefined, 1500);
+    }
+  }
+  
+  useEffect(() => {
+    loadStatSummary();
+    userTimer.current = setInterval(loadStatSummary, 60 * 1000);
+    return () => clearInterval(userTimer.current);
+  }, []);
 
   useSwitchTheme();
 
@@ -188,10 +253,8 @@ function _Home() {
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
       >
         <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>爱德数智AI</div>
-          <div className={styles["sidebar-sub-title"]}>
-            构建你自己的智能助手
-          </div>
+          <div className={styles["sidebar-title"]}>{Locale.Home.HomeTitle}</div>
+          <div className={styles["sidebar-sub-title"]}>{Locale.Home.HomeDesc}</div>
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
           </div>
@@ -253,6 +316,75 @@ function _Home() {
             />
           </div>
         </div>
+        
+        <div className={styles["sidebar-tail"]}>
+          <div className={styles["sidebar-actions"]}>
+            <a className={styles["sidebar-stat"]} onClick={showStatList}>
+            {Locale.Home.OnlineCount(statInfo.online_users_count)}
+            </a>
+            <a className={styles["sidebar-stat"]} onClick={showStatList}>
+            {Locale.Home.MsgCount(statInfo.total_request_count)}
+            </a>
+          </div>
+        </div>
+        
+        { isShowStatList ? (
+        <div className={styles["stat-list"]}>
+          <div className={styles["stat-list-title"]}>{Locale.Home.StatTitle}</div>
+          <div className={styles["stat-list-filter"]}>
+            <div>
+              {Locale.Home.StatFilterLabel}
+              <select onChange={loadStatList} value={statTime}>
+                <option value={1}>1 {Locale.Home.StatFilterMinute}</option>
+                <option value={5}>5 {Locale.Home.StatFilterMinute}</option>
+                <option value={10}>10 {Locale.Home.StatFilterMinute}</option>
+                <option value={30}>30 {Locale.Home.StatFilterMinute}</option>
+                <option value={60}>60 {Locale.Home.StatFilterMinute}</option>
+                <option value={0}>{Locale.Home.StatFilterAll}</option>
+              </select>
+            </div>
+            <div>{Locale.Home.OnlineCount(statList.online_users_count)}</div>
+            <div>{statList.total_request_count} {Locale.Home.StatMsgCountColName}</div>
+          </div>
+          <div className={styles["stat-list-data"]}>
+            <table>
+              <thead>
+                <tr>
+                  <th>{Locale.Home.No}</th>
+                  <th>{Locale.Home.StatNameColName}</th>
+                  <th>{Locale.Home.StatMsgCountColName}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {statList.user_requests_detail.map((obj, index) => {
+                  const [key, val] = Object.entries(obj)[0];
+                  return (
+                    <tr key={index}>
+                      <td>{index+1}</td>
+                      <td>{key}</td>
+                      <td>{val as string}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td>{Locale.Home.StatTotalColName}</td>
+                  <td></td>
+                  <td>{statList.total_request_count}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          
+          <div className={styles["panel-close"]}>
+            <IconButton
+              icon={<CloseIcon />}
+              onClick={() => setIsShowStatList(false)}
+            />
+          </div>
+        </div>
+        ) : (<></>)}
 
         <div
           className={styles["sidebar-drag"]}
