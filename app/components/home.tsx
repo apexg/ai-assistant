@@ -13,8 +13,8 @@ import ChatGptIcon from "../icons/chatgpt.svg";
 
 import BotIcon from "../icons/bot.svg";
 import AddIcon from "../icons/add.svg";
-import UserIcon from "../icons/brain.svg";
-import LogoutIcon from "../icons/close.svg";
+import UserIcon from "../icons/head.svg";
+import LogoutIcon from "../icons/logout.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 

@@ -505,6 +505,7 @@ export function Chat(props: {
       agentid: Wecom.AgentId,
       redirect_uri: Wecom.RedirectUri,
       state: "IdeaAI",
+      panel_size: "small",
       redirect_type: "callback"
     },
     onCheckWeComLogin(data: any) {

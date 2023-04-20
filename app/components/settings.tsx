@@ -33,6 +33,7 @@ import { SearchService, usePromptStore } from "../store/prompt";
 import { requestUsage } from "../requests";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
+import Wecom from "../config/wecom";
 
 function SettingItem(props: {
   title: string;
@@ -119,6 +120,14 @@ export function Settings(props: { closeSettings: () => void }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
+
+  const isAdmin = () => {
+    const currentUser = localStorage.getItem("current_user");
+    if (currentUser) {
+      return !!Wecom.Admin.includes(JSON.parse(currentUser).userId);
+    }
+    return false;
+  };
 
   const promptStore = usePromptStore();
   const builtinCount = SearchService.count.builtin;
@@ -223,6 +232,7 @@ export function Settings(props: { closeSettings: () => void }) {
             </Popover>
           </SettingItem>
 
+          { isAdmin() ? (
           <SettingItem
             title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
             subTitle={
@@ -247,6 +257,7 @@ export function Settings(props: { closeSettings: () => void }) {
               />
             )}
           </SettingItem>
+          ) : (<></>)} 
 
           <SettingItem title={Locale.Settings.SendKey}>
             <select
@@ -365,6 +376,7 @@ export function Settings(props: { closeSettings: () => void }) {
             <></>
           )}
 
+          { isAdmin() ? (
           <SettingItem
             title={Locale.Settings.Token.Title}
             subTitle={Locale.Settings.Token.SubTitle}
@@ -378,7 +390,9 @@ export function Settings(props: { closeSettings: () => void }) {
               }}
             />
           </SettingItem>
+          ) : (<></>)} 
 
+          { isAdmin() ? (
           <SettingItem
             title={Locale.Settings.Usage.Title}
             subTitle={
@@ -402,6 +416,7 @@ export function Settings(props: { closeSettings: () => void }) {
               />
             )}
           </SettingItem>
+          ) : (<></>)} 
 
           <SettingItem
             title={Locale.Settings.HistoryCount.Title}
@@ -474,6 +489,7 @@ export function Settings(props: { closeSettings: () => void }) {
           </SettingItem>
         </List>
 
+        { isAdmin() ? (
         <List>
           <SettingItem title={Locale.Settings.Model}>
             <select
@@ -555,6 +571,7 @@ export function Settings(props: { closeSettings: () => void }) {
             ></InputRange>
           </SettingItem>
         </List>
+        ) : (<></>) }
       </div>
     </ErrorBoundary>
   );

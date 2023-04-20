@@ -474,8 +474,8 @@
 }
 
 .chat-login-panel {
-  width: 480px;
-  height: 416px;
+  width: 320px;
+  height: 380px;
   border-radius: 10px;
   border: var(--border-in-light);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03);
@@ -484,7 +484,7 @@
   top: 50%;
   margin-left: -240px;
   margin-top: -208px;
-  padding: 10px;
+  padding: 10px 50px;
   background-color: white;
   z-index: 1000;
 }
