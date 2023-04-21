@@ -168,10 +168,10 @@ function _Home() {
   const chatStore = useChatStore();
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
+  const statTime = useRef(Wecom.OnlineStatDuration);
   const [userInfo, setUserInfo] = useState({ userId: "", userName: Locale.Home.NoLogin });
   const [statInfo, setStatInfo] = useState({ online_users_count: 0, total_request_count: 0, user_code: "" });
   const [isShowStatList, setIsShowStatList] = useState(false);
-  const [statTime, setStatTime] = useState(Wecom.OnlineStatDuration);
   const [statList, setStatList] = useState({ online_users_count: 0, total_request_count:0, user_requests_detail: [] });
 
   // setting
@@ -212,13 +212,16 @@ function _Home() {
   }
 
   const getStatTime = (evt : any) => {
-    let recent_minutes = statTime;
+    let recent_minutes = 1;
     if (typeof(evt) === "number") {
       recent_minutes = evt;
     } else if (evt) {
       recent_minutes = parseInt(evt.currentTarget.value);
       evt.currentTarget.blur();
-      setStatTime(recent_minutes);
+      //setStatTime(recent_minutes);
+      statTime.current = recent_minutes;
+    } else {
+      recent_minutes = statTime.current;
     }
     return recent_minutes;
   }
@@ -248,12 +251,13 @@ function _Home() {
           showToast(Locale.Home.GetOnlineUserSummaryFail, undefined, 2000);
         }
       });
+    } else {
+      showToast(Locale.Home.NoLogin, undefined, 2000);
     }
   }
 
   const loadStatList = (evt : any) => {
     const recent_minutes = getStatTime(evt);
-        
     fetch(Wecom.OnlineUserListApi, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -271,10 +275,10 @@ function _Home() {
     });
   }
 
-  const showStatList = () => {    
+  const showStatList = () => {
     if (!!getCurrentUser().userId) {
       setIsShowStatList(true);
-      loadStatList(statTime);
+      loadStatList(statTime.current);
     } else {
       showToast(Locale.Home.NoLogin, undefined, 2000);
     }
@@ -285,7 +289,7 @@ function _Home() {
     userTimer.current = setInterval(loadStatSummary, 60 * 1000);
     return () => clearInterval(userTimer.current);
   }, []);
-
+  
   useSwitchTheme();
 
   if (loading) {
@@ -371,7 +375,7 @@ function _Home() {
         <div className={styles["sidebar-tail"]}>
           <div className={styles["sidebar-actions"]}>
             <span className={styles["sidebar-stat"]}>{Locale.Home.StatFilterLabel}</span>
-            <TimeDurationSelect statTime={statTime} onChange={loadStatSummary} onClick={() => setIsShowStatList(false)} />
+            <TimeDurationSelect statTime={statTime.current} onChange={loadStatSummary} onClick={() => setIsShowStatList(false)} />
             <a className={styles["sidebar-stat"]} onClick={showStatList}>
             {Locale.Home.OnlineCount(statInfo.online_users_count)}
             </a>
@@ -387,7 +391,7 @@ function _Home() {
           <div className={styles["stat-list-filter"]}>
             <div>
               {Locale.Home.StatFilterLabel}
-              <TimeDurationSelect statTime={statTime} onChange={loadStatList} />
+              <TimeDurationSelect statTime={statTime.current} onChange={loadStatList} />
             </div>
             <div>{Locale.Home.OnlineCount(statList.online_users_count)}</div>
             <div>{statList.total_request_count} {Locale.Home.StatMsgCountColName}</div>
