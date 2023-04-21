@@ -67,7 +67,6 @@ const tw: LocaleType = {
     StatFilterMinute: "分鐘",
     StatFilterHour: "小時",
     StatFilterDay: "天",
-    StatFilterAll: "全部",
     StatNameColName: "姓名",
     StatMsgCountColName: "問題數量",
     StatTotalColName: "合計",
