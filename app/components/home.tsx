@@ -151,7 +151,7 @@ function _Home() {
   const [userInfo, setUserInfo] = useState({ userId: "", userName: Locale.Home.NoLogin });
   const [statInfo, setStatInfo] = useState({ online_users_count: 0, total_request_count: 0 });
   const [isShowStatList, setIsShowStatList] = useState(false);
-  const [statTime, setStatTime] = useState(1);
+  const [statTime, setStatTime] = useState(Wecom.OnlineStatDuration);
   const [statList, setStatList] = useState({ online_users_count: 0, total_request_count:0, user_requests_detail: [] });
 
   // setting
@@ -178,15 +178,17 @@ function _Home() {
   }
 
   const loadStatSummary = () => {
-    if (!!getCurrentUser().userId) {
+    const userId = getCurrentUser().userId;
+    if (!!userId) {
       fetch(Wecom.OnlineUserApi, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ "recent_minutes": 1, "user_code": localStorage.getItem("ww_code") }),
+        body: JSON.stringify({ "recent_minutes": statTime, "user_id": userId }),
       }).then(res => res.json()).then(res => {
         if (res.result) {
-          if (res.result.isKicked) {
-            showToast(Locale.Home.Offline, undefined, 10000);
+          if (res.result.user_code !== localStorage.getItem("ww_code")) {
+            logout();
+            showToast(Locale.Home.Offline, undefined, 5000);
           } else {
             setStatInfo(res.result)
           }
@@ -339,8 +341,11 @@ function _Home() {
                 <option value={5}>5 {Locale.Home.StatFilterMinute}</option>
                 <option value={10}>10 {Locale.Home.StatFilterMinute}</option>
                 <option value={30}>30 {Locale.Home.StatFilterMinute}</option>
-                <option value={60}>60 {Locale.Home.StatFilterMinute}</option>
-                <option value={0}>{Locale.Home.StatFilterAll}</option>
+                <option value={60}>1 {Locale.Home.StatFilterHour}</option>
+                <option value={1440}>1 {Locale.Home.StatFilterDay}</option>
+                <option value={7200}>5 {Locale.Home.StatFilterDay}</option>
+                <option value={10080}>7 {Locale.Home.StatFilterDay}</option>
+                <option value={43200}>30 {Locale.Home.StatFilterDay}</option>
               </select>
             </div>
             <div>{Locale.Home.OnlineCount(statList.online_users_count)}</div>
