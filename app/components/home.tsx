@@ -209,6 +209,7 @@ function _Home() {
     localStorage.removeItem("ww_code")
     localStorage.removeItem("current_user")
     setUserInfo({ userId: "", userName: Locale.Home.NoLogin })
+    setIsShowStatList(false)
   }
 
   const getStatTime = (evt : any) => {
@@ -218,7 +219,6 @@ function _Home() {
     } else if (evt) {
       recent_minutes = parseInt(evt.currentTarget.value);
       evt.currentTarget.blur();
-      //setStatTime(recent_minutes);
       statTime.current = recent_minutes;
     } else {
       recent_minutes = statTime.current;
@@ -251,7 +251,7 @@ function _Home() {
           showToast(Locale.Home.GetOnlineUserSummaryFail, undefined, 2000);
         }
       });
-    } else {
+    } else if (evt) {
       showToast(Locale.Home.NoLogin, undefined, 2000);
     }
   }

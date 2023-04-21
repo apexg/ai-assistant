@@ -266,9 +266,10 @@
 }
 
 .stat-list-data {
-  height: 570px;
+  height: 586px;
   overflow:auto;
   vertical-align: top;
+  background-color: #ffffff;
 }
 
 .stat-list table {
@@ -284,6 +285,13 @@
   padding: 10px 0;
   position: sticky;
   top: 0;
+  background-color: #ffffff;
+  z-index: 1;
+}
+
+.stat-list tfoot {
+  position: sticky;
+  bottom: 0;
   background-color: #ffffff;
   z-index: 1;
 }
@@ -339,6 +347,7 @@
 .sidebar-actions select {
   width: 60px;
   font-size: 12px;
+  margin-left: 5px;
   margin-right: 15px;
 }
 
