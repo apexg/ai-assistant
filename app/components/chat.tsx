@@ -553,6 +553,7 @@ export function Chat(props: {
         }
       }).catch(err => {
         console.error(err);
+        setIsShowLoginPanel(false)
         showToast(Locale.Chat.NoUser, undefined, 2000)
       });
     },
