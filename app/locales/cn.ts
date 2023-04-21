@@ -68,6 +68,7 @@ const cn = {
     StatFilterDay: "天",
     StatNameColName: "姓名",
     StatMsgCountColName: "提问数量",
+    StatAskTimeColName: "最新提问时间",
     StatTotalColName: "合计",
     GetOnlineUserSummaryFail: "获取在线统计失败",
     GetOnlineStatListFail: "获取在线用户清单失败",

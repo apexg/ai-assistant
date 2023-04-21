@@ -250,7 +250,7 @@
 }
 
 .stat-list {
-  width: 300px;
+  width: 360px;
   height: 650px;
   border-radius: 10px;
   border: var(--border-in-light);
@@ -258,7 +258,7 @@
   position: fixed;
   left: 50%;
   top: 50%;
-  margin-left: -160px;
+  margin-left: -190px;
   margin-top: -335px;
   padding: 10px;
   background-color: white;
@@ -279,7 +279,6 @@
 
 .stat-list th {
   font-size: 14px;
-  width: 50%;
   font-weight: normal;
   text-align: center;
   padding: 10px 0;
@@ -290,11 +289,19 @@
 }
 
 .stat-list th:first-child {
-  width: 20%;
+  width: 12%;
 }
 
-.stat-list th:not(:first-child) {
+.stat-list th:nth-child(2) {
+  width: 26%;
+}
+
+.stat-list th:nth-child(3) {
   width: 40%;
+}
+
+.stat-list th:last-child {
+  width: 22%;
 }
 
 .stat-list td {
@@ -306,6 +313,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 
 .stat-list-title {
   width: 100%;
@@ -329,6 +337,7 @@
   vertical-align: middle;
 }
 .sidebar-actions select {
+  width: 60px;
   font-size: 12px;
   margin-right: 15px;
 }

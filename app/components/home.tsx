@@ -169,7 +169,7 @@ function _Home() {
   const loading = !useHasHydrated();
   const [showSideBar, setShowSideBar] = useState(true);
   const [userInfo, setUserInfo] = useState({ userId: "", userName: Locale.Home.NoLogin });
-  const [statInfo, setStatInfo] = useState({ online_users_count: 0, total_request_count: 0 });
+  const [statInfo, setStatInfo] = useState({ online_users_count: 0, total_request_count: 0, user_code: "" });
   const [isShowStatList, setIsShowStatList] = useState(false);
   const [statTime, setStatTime] = useState(Wecom.OnlineStatDuration);
   const [statList, setStatList] = useState({ online_users_count: 0, total_request_count:0, user_requests_detail: [] });
@@ -189,6 +189,20 @@ function _Home() {
       }
     }
     return userInfo;
+  }
+
+  const getDisplayTime = (dateTimeString : string) => {
+    const now = new Date();
+    const time = new Date(dateTimeString);
+    
+    if (time.getFullYear() === now.getFullYear()) {
+      if (time.toDateString() === now.toDateString()) {
+        return dateTimeString.substring(11)
+      } else {
+        return dateTimeString.substring(5)
+      }
+    }
+    return dateTimeString;
   }
 
   const logout = () => {
@@ -246,7 +260,8 @@ function _Home() {
       body: JSON.stringify({ recent_minutes }),
     }).then(res => res.json()).then(res => {
       if (res.result) {
-        setStatList(res.result)
+        setStatList(res.result);
+        setStatInfo(Object.assign({}, statInfo, (({ user_requests_detail, ...rest }) => rest)(res.result)));
       } else {
         showToast(Locale.Home.GetOnlineStatListFail, undefined, 2000);
       }
@@ -383,24 +398,24 @@ function _Home() {
                 <tr>
                   <th>{Locale.Home.No}</th>
                   <th>{Locale.Home.StatNameColName}</th>
+                  <th>{Locale.Home.StatAskTimeColName}</th>
                   <th>{Locale.Home.StatMsgCountColName}</th>
                 </tr>
               </thead>
               <tbody>
-                {statList.user_requests_detail.map((obj, index) => {
-                  const [key, val] = Object.entries(obj)[0];
-                  return (
-                    <tr key={index}>
-                      <td>{index+1}</td>
-                      <td>{key}</td>
-                      <td>{val as string}</td>
-                    </tr>
-                  );
-                })}
+                {statList.user_requests_detail.map(({ name, request_count, latest_time }, index) => (
+                <tr key={index}>
+                  <td>{index+1}</td>
+                  <td>{name}</td>
+                  <td>{getDisplayTime(latest_time)}</td>
+                  <td>{request_count}</td>
+                </tr>
+                ))}
               </tbody>
               <tfoot>
                 <tr>
                   <td>{Locale.Home.StatTotalColName}</td>
+                  <td></td>
                   <td></td>
                   <td>{statList.total_request_count}</td>
                 </tr>

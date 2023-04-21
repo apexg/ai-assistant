@@ -71,6 +71,7 @@ const it: LocaleType = {
     StatFilterDay: "Day(s)",
     StatNameColName: "Full Name",
     StatMsgCountColName: "Questions Count",
+    StatAskTimeColName: "Latest Ask Time",
     StatTotalColName: "Total Number",
     GetOnlineUserSummaryFail: "Failed to obtain online statistics",
     GetOnlineStatListFail: "Failed to obtain online user details",

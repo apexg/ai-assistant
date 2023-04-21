@@ -69,6 +69,7 @@ const tw: LocaleType = {
     StatFilterDay: "天",
     StatNameColName: "姓名",
     StatMsgCountColName: "提問數量",
+    StatAskTimeColName: "最新提問時間",
     StatTotalColName: "合計",
     GetOnlineUserSummaryFail: "獲取在線統計失敗",
     GetOnlineStatListFail: "獲取在線用戶明細失敗",
