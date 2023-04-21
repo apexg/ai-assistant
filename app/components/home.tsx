@@ -81,7 +81,7 @@ function useSwitchTheme() {
 }
 
 function useDragSideBar() {
-  const limit = (x: number) => Math.min(500, Math.max(220, x));
+  const limit = (x: number) => Math.min(500, Math.max(290, x));
 
   const chatStore = useChatStore();
   const startX = useRef(0);
