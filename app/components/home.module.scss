@@ -230,9 +230,9 @@
 }
 
 .sidebar-stat {
-  margin-left: 5px;
-  margin-right: 20px;
+  margin: 3px 15px 0 5px;
   font-size: 12px;
+  font-weight: normal;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -241,7 +241,11 @@
   text-decoration: none;
 }
 
-.sidebar-stat:hover {
+.sidebar-stat:first-child {
+  margin-right: 0 !important;
+}
+
+.sidebar-stat:not(:first-child):hover {
   color: var(--primary);
 }
 
@@ -317,12 +321,15 @@
   color: var(--black);
 }
 
-.stat-list-filter select {
+.sidebar-actions select, .stat-list-filter select {
   margin-left: 10px;
   width: 70px;
   height: 24px;
   padding: 0;
   vertical-align: middle;
+}
+.sidebar-actions select {
+  margin-right: 15px;
 }
 
 .stat-list-filter select:focus {

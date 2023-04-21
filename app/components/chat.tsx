@@ -549,11 +549,11 @@ export function Chat(props: {
           localStorage.setItem("current_user", JSON.stringify(user));
         } else {
           setIsShowLoginPanel(false)
-          showToast(Locale.Chat.NoUser, undefined, 5000);
+          showToast(Locale.Chat.NoUser, undefined, 2000);
         }
       }).catch(err => {
         console.error(err);
-        showToast(Locale.Chat.NoUser, undefined, 5000)
+        showToast(Locale.Chat.NoUser, undefined, 2000)
       });
     },
     onLoginFail(err: any) {

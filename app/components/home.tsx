@@ -137,6 +137,26 @@ const useHasHydrated = () => {
   return hasHydrated;
 };
 
+function TimeDurationSelect(props: {
+  statTime?: number;
+  onChange?: (evt : any) => void;
+  onClick?: () => void;
+}) {
+  return (
+    <select onChange={props?.onChange} onClick={props.onClick} value={props?.statTime}>
+      <option value={1}>1 {Locale.Home.StatFilterMinute}</option>
+      <option value={5}>5 {Locale.Home.StatFilterMinute}</option>
+      <option value={10}>10 {Locale.Home.StatFilterMinute}</option>
+      <option value={30}>30 {Locale.Home.StatFilterMinute}</option>
+      <option value={60}>1 {Locale.Home.StatFilterHour}</option>
+      <option value={1440}>1 {Locale.Home.StatFilterDay}</option>
+      <option value={7200}>5 {Locale.Home.StatFilterDay}</option>
+      <option value={10080}>7 {Locale.Home.StatFilterDay}</option>
+      <option value={43200}>30 {Locale.Home.StatFilterDay}</option>
+    </select>
+  );
+}
+
 function _Home() {
   const [createNewSession, currentIndex, removeSession] = useChatStore(
     (state) => [
@@ -177,13 +197,26 @@ function _Home() {
     setUserInfo({ userId: "", userName: Locale.Home.NoLogin })
   }
 
-  const loadStatSummary = () => {
-    const userId = getCurrentUser().userId;
-    if (!!userId) {
+  const getStatTime = (evt : any) => {
+    let recent_minutes = statTime;
+    if (typeof(evt) === "number") {
+      recent_minutes = evt;
+    } else if (evt) {
+      recent_minutes = parseInt(evt.currentTarget.value);
+      evt.currentTarget.blur();
+      setStatTime(recent_minutes);
+    }
+    return recent_minutes;
+  }
+
+  const loadStatSummary = (evt?: any) => {
+    const user_id = getCurrentUser().userId;
+    if (!!user_id) {
+      let recent_minutes = getStatTime(evt);
       fetch(Wecom.OnlineUserApi, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ "recent_minutes": statTime, "user_id": userId }),
+        body: JSON.stringify({ recent_minutes, user_id }),
       }).then(res => res.json()).then(res => {
         if (res.result) {
           if (res.result.user_code !== localStorage.getItem("ww_code")) {
@@ -195,20 +228,18 @@ function _Home() {
         } else {
           console.log(Locale.Home.GetOnlineUserSummaryFail);
         }
-      }).catch(err => console.error(err));
+      }).catch(err => {
+        console.error(err);
+        if (evt) {
+          showToast(Locale.Home.GetOnlineUserSummaryFail, undefined, 2000);
+        }
+      });
     }
   }
 
   const loadStatList = (evt : any) => {
-    let recent_minutes = 1;
-    if (typeof(evt) === "number") {
-      recent_minutes = evt;
-    } else {
-      recent_minutes = parseInt(evt.currentTarget.value);
-      evt.currentTarget.blur();
-      setStatTime(recent_minutes);
-    }
-    
+    const recent_minutes = getStatTime(evt);
+        
     fetch(Wecom.OnlineUserListApi, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -217,11 +248,11 @@ function _Home() {
       if (res.result) {
         setStatList(res.result)
       } else {
-        showToast(Locale.Home.GetOnlineStatListFail, undefined, 5000);
+        showToast(Locale.Home.GetOnlineStatListFail, undefined, 2000);
       }
     }).catch(err => {
       console.error(err);
-      showToast(Locale.Home.GetOnlineStatListFail, undefined, 5000);
+      showToast(Locale.Home.GetOnlineStatListFail, undefined, 2000);
     });
   }
 
@@ -230,7 +261,7 @@ function _Home() {
       setIsShowStatList(true);
       loadStatList(statTime);
     } else {
-      showToast(Locale.Home.NoLogin, undefined, 1500);
+      showToast(Locale.Home.NoLogin, undefined, 2000);
     }
   }
   
@@ -324,6 +355,8 @@ function _Home() {
         
         <div className={styles["sidebar-tail"]}>
           <div className={styles["sidebar-actions"]}>
+            <span className={styles["sidebar-stat"]}>{Locale.Home.StatFilterLabel}</span>
+            <TimeDurationSelect statTime={statTime} onChange={loadStatSummary} onClick={() => setIsShowStatList(false)} />
             <a className={styles["sidebar-stat"]} onClick={showStatList}>
             {Locale.Home.OnlineCount(statInfo.online_users_count)}
             </a>
@@ -339,17 +372,7 @@ function _Home() {
           <div className={styles["stat-list-filter"]}>
             <div>
               {Locale.Home.StatFilterLabel}
-              <select onChange={loadStatList} value={statTime}>
-                <option value={1}>1 {Locale.Home.StatFilterMinute}</option>
-                <option value={5}>5 {Locale.Home.StatFilterMinute}</option>
-                <option value={10}>10 {Locale.Home.StatFilterMinute}</option>
-                <option value={30}>30 {Locale.Home.StatFilterMinute}</option>
-                <option value={60}>1 {Locale.Home.StatFilterHour}</option>
-                <option value={1440}>1 {Locale.Home.StatFilterDay}</option>
-                <option value={7200}>5 {Locale.Home.StatFilterDay}</option>
-                <option value={10080}>7 {Locale.Home.StatFilterDay}</option>
-                <option value={43200}>30 {Locale.Home.StatFilterDay}</option>
-              </select>
+              <TimeDurationSelect statTime={statTime} onChange={loadStatList} />
             </div>
             <div>{Locale.Home.OnlineCount(statList.online_users_count)}</div>
             <div>{statList.total_request_count} {Locale.Home.StatMsgCountColName}</div>
