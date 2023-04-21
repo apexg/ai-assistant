@@ -219,7 +219,10 @@ function _Home() {
       } else {
         showToast(Locale.Home.GetOnlineStatListFail, undefined, 5000);
       }
-    }).catch(err => console.error(err));
+    }).catch(err => {
+      console.error(err);
+      showToast(Locale.Home.GetOnlineStatListFail, undefined, 5000);
+    });
   }
 
   const showStatList = () => {    

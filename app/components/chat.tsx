@@ -551,7 +551,10 @@ export function Chat(props: {
           setIsShowLoginPanel(false)
           showToast(Locale.Chat.NoUser, undefined, 5000);
         }
-      }).catch(err => console.error(err));
+      }).catch(err => {
+        console.error(err);
+        showToast(Locale.Chat.NoUser, undefined, 5000)
+      });
     },
     onLoginFail(err: any) {
       console.log(err)
