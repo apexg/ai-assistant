@@ -187,8 +187,8 @@ function _Home() {
       }).then(res => res.json()).then(res => {
         if (res.result) {
           if (res.result.user_code !== localStorage.getItem("ww_code")) {
-            logout();
-            showToast(Locale.Home.Offline, undefined, 5000);
+            setTimeout(logout, 10000);
+            showToast(Locale.Home.Offline, undefined, 10000);
           } else {
             setStatInfo(res.result)
           }
