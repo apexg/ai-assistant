@@ -163,6 +163,22 @@ export function SideBar(props: {
     return dateTimeString;
   };
 
+  const deleteSession = () => {
+    if (!!getCurrentUser().userId) {
+      chatStore.deleteSession();
+    } else {
+      showToast(Locale.Home.NoLogin, undefined, 2000);
+    }
+  };
+
+  const newSession = () => {
+    if (!!getCurrentUser().userId) {
+      chatStore.newSession();
+    } else {
+      showToast(Locale.Home.NoLogin, undefined, 2000);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("ww_code");
     localStorage.removeItem("current_user");
@@ -293,10 +309,7 @@ export function SideBar(props: {
       <div className={styles["sidebar-tail"]}>
         <div className={styles["sidebar-actions"]}>
           <div className={styles["sidebar-action"] + " " + styles.mobile}>
-            <IconButton
-              icon={<CloseIcon />}
-              onClick={chatStore.deleteSession}
-            />
+            <IconButton icon={<CloseIcon />} onClick={deleteSession} />
           </div>
           <div className={styles["sidebar-action"]}>
             <Link to={Path.Settings}>
@@ -320,9 +333,7 @@ export function SideBar(props: {
           <IconButton
             icon={<AddIcon />}
             text={shouldNarrow ? undefined : Locale.Home.NewChat}
-            onClick={() => {
-              chatStore.newSession();
-            }}
+            onClick={newSession}
             shadow
           />
         </div>

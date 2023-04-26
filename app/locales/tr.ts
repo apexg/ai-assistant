@@ -42,7 +42,7 @@ const tr: LocaleType = {
     Copy: "Tümünü Kopyala",
     Download: "İndir",
     MessageFromYou: "Sizin Mesajınız",
-    MessageFromChatGPT: "ChatGPT'nin Mesajı",
+    MessageFromChatGPT: "IdeaAI'nin Mesajı",
   },
   Memory: {
     Title: "Bellek Komutları",
