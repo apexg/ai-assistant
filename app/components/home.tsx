@@ -2,7 +2,7 @@
 
 require("../polyfill");
 
-import { useState, useEffect, StyleHTMLAttributes } from "react";
+import { useState, useEffect, useRef, StyleHTMLAttributes } from "react";
 
 import styles from "./home.module.scss";
 
@@ -81,6 +81,28 @@ const useHasHydrated = () => {
 
 function WideScreen() {
   const config = useAppConfig();
+  const sliderRef = useRef<(user: any) => void>();
+  const chatRef = useRef<(isLogin: boolean) => void>();
+
+  const setLoginCallback = (setUserInfo: any) => {
+    sliderRef.current = setUserInfo;
+  };
+
+  const setLogoutCallback = (setIsLogin: any) => {
+    chatRef.current = setIsLogin;
+  };
+
+  const setUserInfo = (user: any) => {
+    if (sliderRef.current) {
+      sliderRef.current(user);
+    }
+  };
+
+  const setLogout = () => {
+    if (chatRef.current) {
+      chatRef.current(false);
+    }
+  };
 
   return (
     <div
@@ -88,12 +110,22 @@ function WideScreen() {
         config.tightBorder ? styles["tight-container"] : styles.container
       }`}
     >
-      <SideBar />
+      <SideBar onLogin={setLoginCallback} onLogout={setLogout} />
 
       <div className={styles["window-content"]}>
         <Routes>
-          <Route path={Path.Home} element={<Chat />} />
-          <Route path={Path.Chat} element={<Chat />} />
+          <Route
+            path={Path.Home}
+            element={
+              <Chat onLogin={setUserInfo} onLogout={setLogoutCallback} />
+            }
+          />
+          <Route
+            path={Path.Chat}
+            element={
+              <Chat onLogin={setUserInfo} onLogout={setLogoutCallback} />
+            }
+          />
           <Route path={Path.Settings} element={<Settings />} />
         </Routes>
       </div>
@@ -104,15 +136,46 @@ function WideScreen() {
 function MobileScreen() {
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
+  const sliderRef = useRef<(user: any) => void>();
+  const chatRef = useRef<(isLogin: boolean) => void>();
+
+  const setLoginCallback = (setUserInfo: any) => {
+    sliderRef.current = setUserInfo;
+  };
+
+  const setLogoutCallback = (setIsLogin: any) => {
+    chatRef.current = setIsLogin;
+  };
+
+  const setUserInfo = (user: any) => {
+    if (sliderRef.current) {
+      sliderRef.current(user);
+    }
+  };
+
+  const setLogout = () => {
+    if (chatRef.current) {
+      chatRef.current(false);
+    }
+  };
 
   return (
     <div className={styles.container}>
-      <SideBar className={isHome ? styles["sidebar-show"] : ""} />
+      <SideBar
+        onLogin={setLoginCallback}
+        onLogout={setLogout}
+        className={isHome ? styles["sidebar-show"] : ""}
+      />
 
       <div className={styles["window-content"]}>
         <Routes>
           <Route path={Path.Home} element={null} />
-          <Route path={Path.Chat} element={<Chat />} />
+          <Route
+            path={Path.Chat}
+            element={
+              <Chat onLogin={setUserInfo} onLogout={setLogoutCallback} />
+            }
+          />
           <Route path={Path.Settings} element={<Settings />} />
         </Routes>
       </div>

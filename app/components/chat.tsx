@@ -1,5 +1,12 @@
 import { useDebounce, useDebouncedCallback } from "use-debounce";
-import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
+import {
+  memo,
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  useImperativeHandle,
+} from "react";
 import { showToast } from "./ui-lib";
 
 import SendWhiteIcon from "../icons/send-white.svg";
@@ -426,7 +433,10 @@ export function ChatActions(props: {
   );
 }
 
-export function Chat(props: { onLogin?: (user: any) => void }) {
+export function Chat(props: {
+  onLogin?: (user: any) => void;
+  onLogout?: (callback: (isLogin: boolean) => void) => void;
+}) {
   type RenderMessage = Message & { preview?: boolean };
 
   const chatStore = useChatStore();
@@ -500,6 +510,8 @@ export function Chat(props: { onLogin?: (user: any) => void }) {
       trailing: true,
     },
   );
+
+  useImperativeHandle(props.onLogout, () => setIsLogin);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(measure, [userInput]);
