@@ -725,6 +725,10 @@
 }
 
 @media only screen and (max-width: 600px) {
+  .chat-body::-webkit-scrollbar {
+    width: var(--bar-width);
+  }
+
   .chat-input {
     font-size: 16px;
   }
