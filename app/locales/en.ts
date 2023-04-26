@@ -1,4 +1,4 @@
-import { SubmitKey } from "../store/app";
+import { SubmitKey } from "../store/config";
 import type { LocaleType } from "./index";
 
 const en: LocaleType = {
@@ -19,6 +19,7 @@ const en: LocaleType = {
       Copy: "Copy",
       Stop: "Stop",
       Retry: "Retry",
+      Delete: "Delete",
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
@@ -41,7 +42,7 @@ const en: LocaleType = {
     Copy: "Copy All",
     Download: "Download",
     MessageFromYou: "Message From You",
-    MessageFromChatGPT: "Message From 爱德AI",
+    MessageFromChatGPT: "Message From ChatGPT",
   },
   Memory: {
     Title: "Memory Prompt",
@@ -61,7 +62,8 @@ const en: LocaleType = {
     HomeDesc: "Build your own intelligent assistant",
     Logout: "Logout",
     NoLogin: "Exited",
-    Offline: "You have logged in elsewhere and will be forcibly offline in 10 seconds.",
+    Offline:
+      "You have logged in elsewhere and will be forcibly offline in 10 seconds.",
     OnlineCount: (count: number) => `${count}  people online`,
     MsgCount: (count: number) => `${count} Latest Questions`,
     StatTitle: "Online Statistics",
@@ -100,6 +102,8 @@ const en: LocaleType = {
         es: "Español",
         it: "Italiano",
         tr: "Türkçe",
+        jp: "日本語",
+        de: "Deutsch",
       },
     },
     Avatar: "Avatar",
@@ -128,6 +132,11 @@ const en: LocaleType = {
       ListCount: (builtin: number, custom: number) =>
         `${builtin} built-in, ${custom} user-defined`,
       Edit: "Edit",
+      Modal: {
+        Title: "Prompt List",
+        Add: "Add One",
+        Search: "Search Prompts",
+      },
     },
     HistoryCount: {
       Title: "Attached Messages Count",
@@ -149,7 +158,7 @@ const en: LocaleType = {
         return `Used this month $${used}, subscription $${total}`;
       },
       IsChecking: "Checking...",
-      Check: "Check Again",
+      Check: "Check",
       NoAccess: "Enter API Key to check balance",
     },
     AccessCode: {

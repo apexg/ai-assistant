@@ -1,4 +1,4 @@
-import { SubmitKey } from "../store/app";
+import { SubmitKey } from "../store/config";
 import type { LocaleType } from "./index";
 
 const es: LocaleType = {
@@ -19,6 +19,7 @@ const es: LocaleType = {
       Copy: "Copiar",
       Stop: "Detener",
       Retry: "Reintentar",
+      Delete: "Delete",
     },
     Rename: "Renombrar chat",
     Typing: "Escribiendo...",
@@ -41,7 +42,7 @@ const es: LocaleType = {
     Copy: "Copiar todo",
     Download: "Descargar",
     MessageFromYou: "Mensaje de ti",
-    MessageFromChatGPT: "Mensaje de 爱德AI",
+    MessageFromChatGPT: "Mensaje de ChatGPT",
   },
   Memory: {
     Title: "Historial de memoria",
@@ -61,7 +62,8 @@ const es: LocaleType = {
     HomeDesc: "Build your own intelligent assistant",
     Logout: "Logout",
     NoLogin: "Exited",
-    Offline: "You have logged in elsewhere and will be forcibly offline in 10 seconds.",
+    Offline:
+      "You have logged in elsewhere and will be forcibly offline in 10 seconds.",
     OnlineCount: (count: number) => `${count}  people online`,
     MsgCount: (count: number) => `${count} Latest Questions`,
     StatTitle: "Online Statistics",
@@ -100,6 +102,8 @@ const es: LocaleType = {
         es: "Español",
         it: "Italiano",
         tr: "Türkçe",
+        jp: "日本語",
+        de: "Deutsch",
       },
     },
     Avatar: "Avatar",
@@ -128,6 +132,11 @@ const es: LocaleType = {
       ListCount: (builtin: number, custom: number) =>
         `${builtin} incorporado, ${custom} definido por el usuario`,
       Edit: "Editar",
+      Modal: {
+        Title: "Prompt List",
+        Add: "Add One",
+        Search: "Search Prompts",
+      },
     },
     HistoryCount: {
       Title: "Cantidad de mensajes adjuntos",

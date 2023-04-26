@@ -1,4 +1,4 @@
-import { SubmitKey } from "../store/app";
+import { SubmitKey } from "../store/config";
 import type { LocaleType } from "./index";
 
 const it: LocaleType = {
@@ -19,6 +19,7 @@ const it: LocaleType = {
       Copy: "Copia",
       Stop: "Stop",
       Retry: "Riprova",
+      Delete: "Delete",
     },
     Rename: "Rinomina Chat",
     Typing: "Typing…",
@@ -41,7 +42,7 @@ const it: LocaleType = {
     Copy: "Copia tutto",
     Download: "Scarica",
     MessageFromYou: "Messaggio da te",
-    MessageFromChatGPT: "Messaggio da 爱德AI",
+    MessageFromChatGPT: "Messaggio da ChatGPT",
   },
   Memory: {
     Title: "Prompt di memoria",
@@ -50,18 +51,19 @@ const it: LocaleType = {
     Send: "Send Memory",
     Reset: "Reset Session",
     ResetConfirm:
-      "Resetting will clear the current conversation history and historical memory. Are you sure you want to reset?",
+      "Ripristinare cancellerà la conversazione corrente e la cronologia di memoria. Sei sicuro che vuoi riavviare?",
   },
   Home: {
     NewChat: "Nuova Chat",
     DeleteChat: "Confermare la cancellazione della conversazione selezionata?",
-    DeleteToast: "Chat Deleted",
+    DeleteToast: "Chat Cancellata",
     Revert: "Revert",
     HomeTitle: "Idea AI",
     HomeDesc: "Build your own intelligent assistant",
     Logout: "Logout",
     NoLogin: "Exited",
-    Offline: "You have logged in elsewhere and will be forcibly offline in 10 seconds.",
+    Offline:
+      "You have logged in elsewhere and will be forcibly offline in 10 seconds.",
     OnlineCount: (count: number) => `${count}  people online`,
     MsgCount: (count: number) => `${count} Latest Questions`,
     StatTitle: "Online Statistics",
@@ -100,6 +102,8 @@ const it: LocaleType = {
         es: "Español",
         it: "Italiano",
         tr: "Türkçe",
+        jp: "日本語",
+        de: "Deutsch",
       },
     },
     Avatar: "Avatar",
@@ -116,9 +120,9 @@ const it: LocaleType = {
       GoToUpdate: "Aggiorna",
     },
     SendKey: "Tasto invia",
-    Theme: "tema",
-    TightBorder: "Bordi stretti",
-    SendPreviewBubble: "Invia l'anteprima della bolla",
+    Theme: "Tema",
+    TightBorder: "Schermo intero",
+    SendPreviewBubble: "Anteprima di digitazione",
     Prompt: {
       Disable: {
         Title: "Disabilita l'auto completamento",
@@ -128,6 +132,11 @@ const it: LocaleType = {
       ListCount: (builtin: number, custom: number) =>
         `${builtin} built-in, ${custom} user-defined`,
       Edit: "Modifica",
+      Modal: {
+        Title: "Prompt List",
+        Add: "Add One",
+        Search: "Search Prompts",
+      },
     },
     HistoryCount: {
       Title: "Conteggio dei messaggi allegati",
@@ -139,7 +148,7 @@ const it: LocaleType = {
         "Comprimerà se la lunghezza dei messaggi non compressi supera il valore",
     },
     Token: {
-      Title: "Chiave API",
+      Title: "API Key",
       SubTitle:
         "Utilizzare la chiave per ignorare il limite del codice di accesso",
       Placeholder: "OpenAI API Key",
@@ -147,7 +156,7 @@ const it: LocaleType = {
     Usage: {
       Title: "Bilancio Account",
       SubTitle(used: any, total: any) {
-        return `Usato in questo mese $${used}, subscription $${total}`;
+        return `Attualmente usato in questo mese $${used}, soglia massima $${total}`;
       },
       IsChecking: "Controllando...",
       Check: "Controlla ancora",
