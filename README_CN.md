@@ -1,9 +1,5 @@
 <div align="center">
 <img src="./docs/images/icon.svg" alt="预览"/>
-
-<h1 align="center">爱德数智AI - 智能助手</h1>
-
-
 ## 前置条件：
 - 部署clash 代理，在华为云服务器192.168.0.149 上进行部署
 - 1,docker run -p 1234:80 -d haishanh/yacd  这个服务用于web配置，不用总在线服务
@@ -11,6 +7,10 @@
 这个服务启动后，就可以进行代理服务，代理url http://192.168.0.149:7890
 - 3,启动我们自己的在线用户统计的后端服务/workspace/flask_deployment_to_k8s/ai_install_docker_qy.sh
 - 4,启动智能聊天服务：/workspace/flask_deployment_to_k8s/ai_install_docker.sh
+<h1 align="center">爱德数智AI - 智能助手</h1>
+
+
+
 
 一键免费部署你的私人 ChatGPT 网页应用。
 
