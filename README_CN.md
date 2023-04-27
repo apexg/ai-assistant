@@ -1,5 +1,5 @@
-<div align="center">
-<img src="./docs/images/icon.svg" alt="预览"/>
+<div align="center"/>
+
 ## 前置条件：
 - 部署clash 代理，在华为云服务器192.168.0.149 上进行部署
 - 1,docker run -p 1234:80 -d haishanh/yacd  这个服务用于web配置，不用总在线服务
