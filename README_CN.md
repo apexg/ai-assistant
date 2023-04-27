@@ -1,4 +1,4 @@
-<div align="center"/>
+
 
 
 ## 前置条件：
@@ -9,7 +9,7 @@
 4. 启动我们自己的在线用户统计的后端服务/workspace/flask_deployment_to_k8s/ai_install_docker_qy.sh
 5. 启动智能聊天服务：/workspace/flask_deployment_to_k8s/ai_install_docker.sh
 
-
+<div align="center">
 <h1 align="center">爱德数智AI - 智能助手</h1>
 
 
