@@ -193,24 +193,24 @@ export function SideBar(props: {
   };
 
   const getStatTime = (evt: any) => {
-    let recent_minutes = 1;
+    let recentMinutes = 1;
     if (typeof evt === "number") {
-      recent_minutes = evt;
+      recentMinutes = evt;
     } else if (evt) {
-      recent_minutes = parseInt(evt.currentTarget.value);
+      recentMinutes = parseInt(evt.currentTarget.value);
       evt.currentTarget.blur();
-      statTime.current = recent_minutes;
+      statTime.current = recentMinutes;
     } else {
-      recent_minutes = statTime.current;
+      recentMinutes = statTime.current;
     }
-    return recent_minutes;
+    return recentMinutes;
   };
 
   const loadStatSummary = (evt?: any) => {
-    const user_id = getCurrentUser(userInfo)?.userId;
-    if (!!user_id) {
-      const recent_minutes = getStatTime(evt);
-      loadOnlineUser(user_id, recent_minutes)
+    const userId = getCurrentUser(userInfo)?.userId;
+    if (!!userId) {
+      const recentMinutes = getStatTime(evt);
+      loadOnlineUser(userId, recentMinutes)
         .then((res) => {
           if (res.result) {
             if (!isWeCom() && res.result.user_code !== getUserCode()) {
@@ -235,8 +235,8 @@ export function SideBar(props: {
   };
 
   const loadStatList = (evt: any) => {
-    const recent_minutes = getStatTime(evt);
-    loadOnlineUserList(recent_minutes)
+    const recentMinutes = getStatTime(evt);
+    loadOnlineUserList(recentMinutes)
       .then((res) => {
         if (res.result) {
           setStatList(res.result);

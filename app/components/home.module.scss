@@ -745,6 +745,10 @@
   .chat-body::-webkit-scrollbar {
     width: var(--bar-width);
   }
+  .panel-close {
+    top: 8px;
+    right: 8px;
+  }
 
   .chat-input {
     font-size: 16px;

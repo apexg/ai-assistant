@@ -35,6 +35,7 @@ export async function requestOpenai(req: NextRequest) {
   });
 }
 
+// 公共的用于后端的请求方法，同步调用(await request(...))
 export async function request(options: {
   url: string;
   method?: string;
