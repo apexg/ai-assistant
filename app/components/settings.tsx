@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, HTMLProps, useRef } from "react";
+import { getCurrentUser } from "./common";
 
 import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
@@ -223,7 +224,7 @@ export function Settings() {
   );
 
   const isAdmin = () => {
-    const currentUser = localStorage.getItem("current_user");
+    const currentUser = getCurrentUser();
     if (currentUser) {
       return !!Wecom.Admin.includes(JSON.parse(currentUser).userId);
     }

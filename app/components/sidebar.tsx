@@ -24,10 +24,22 @@ import {
 } from "../constant";
 
 import { Link, useNavigate } from "react-router-dom";
-import { useMobileScreen } from "../utils";
+import { isMobileScreen, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { setInterval } from "timers";
 import Wecom from "../config/wecom";
+import {
+  loadOnlineUser,
+  loadOnlineUserList,
+  loadUserInfo,
+  getCurrentUser,
+  setCurrentUser,
+  getUserCode,
+  setUserCode,
+  clearUser,
+  isWeCom,
+  getWeComCode,
+} from "./common";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -111,10 +123,12 @@ function TimeDurationSelect(props: {
 
 export function SideBar(props: {
   className?: string;
-  onLogin?: (callback: (user: any) => void) => void;
-  onLogout?: () => void;
+  onAuthLogin?: (user: any) => void; // 企微工作台登录事件
+  onQRLoginCallback?: (callback: (user: any) => void) => void; // chat登录回调
+  onLogout?: () => void; // 退出事件
 }) {
   const chatStore = useChatStore();
+  const isMobileScreen = useMobileScreen();
 
   // drag side bar
   const { onDragMouseDown, shouldNarrow } = useDragSideBar();
@@ -139,16 +153,6 @@ export function SideBar(props: {
 
   const userTimer = useRef<NodeJS.Timeout>();
 
-  const getCurrentUser = () => {
-    if (!userInfo.userId) {
-      const currentUser = localStorage.getItem("current_user");
-      if (currentUser) {
-        return JSON.parse(currentUser);
-      }
-    }
-    return userInfo;
-  };
-
   const getDisplayTime = (dateTimeString: string) => {
     const now = new Date();
     const time = new Date(dateTimeString);
@@ -164,7 +168,7 @@ export function SideBar(props: {
   };
 
   const deleteSession = () => {
-    if (!!getCurrentUser().userId) {
+    if (!!getCurrentUser(userInfo)?.userId) {
       chatStore.deleteSession();
     } else {
       showToast(Locale.Home.NoLogin, undefined, 2000);
@@ -172,7 +176,7 @@ export function SideBar(props: {
   };
 
   const newSession = () => {
-    if (!!getCurrentUser().userId) {
+    if (!!getCurrentUser(userInfo)?.userId) {
       chatStore.newSession();
     } else {
       showToast(Locale.Home.NoLogin, undefined, 2000);
@@ -180,11 +184,13 @@ export function SideBar(props: {
   };
 
   const logout = () => {
-    localStorage.removeItem("ww_code");
-    localStorage.removeItem("current_user");
+    clearUser();
     setUserInfo({ userId: "", userName: Locale.Home.NoLogin });
     setIsShowStatList(false);
     props.onLogout && props.onLogout();
+
+    if (isWeCom()) {
+    }
   };
 
   const getStatTime = (evt: any) => {
@@ -202,19 +208,14 @@ export function SideBar(props: {
   };
 
   const loadStatSummary = (evt?: any) => {
-    const user_id = getCurrentUser().userId;
+    const user_id = getCurrentUser(userInfo)?.userId;
     if (!!user_id) {
-      let recent_minutes = getStatTime(evt);
-      fetch(Wecom.OnlineUserApi, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recent_minutes, user_id }),
-      })
-        .then((res) => res.json())
+      const recent_minutes = getStatTime(evt);
+      loadOnlineUser(user_id, recent_minutes)
         .then((res) => {
           if (res.result) {
-            if (res.result.user_code !== localStorage.getItem("ww_code")) {
-              setTimeout(logout, 10000);
+            if (res.result.user_code !== getUserCode()) {
+              //setTimeout(logout, 10000);
               showToast(Locale.Home.Offline, undefined, 10000);
             } else {
               setStatInfo(res.result);
@@ -236,12 +237,7 @@ export function SideBar(props: {
 
   const loadStatList = (evt: any) => {
     const recent_minutes = getStatTime(evt);
-    fetch(Wecom.OnlineUserListApi, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ recent_minutes }),
-    })
-      .then((res) => res.json())
+    loadOnlineUserList(recent_minutes)
       .then((res) => {
         if (res.result) {
           setStatList(res.result);
@@ -263,7 +259,7 @@ export function SideBar(props: {
   };
 
   const showStatList = () => {
-    if (!!getCurrentUser().userId) {
+    if (!!getCurrentUser(userInfo)?.userId) {
       setIsShowStatList(true);
       loadStatList(statTime.current);
     } else {
@@ -271,11 +267,31 @@ export function SideBar(props: {
     }
   };
 
-  useImperativeHandle(props.onLogin, () => setUserInfo);
+  useImperativeHandle(props.onQRLoginCallback, () => setUserInfo);
 
   useEffect(() => {
-    loadStatSummary();
-    userTimer.current = setInterval(loadStatSummary, 60 * 1000);
+    if (!getCurrentUser(userInfo)?.userId && isWeCom()) {
+      console.log("是企业微信");
+      const code = getWeComCode();
+      if (code) {
+        setUserCode(code);
+        loadUserInfo(code)
+          .then((user) => {
+            setCurrentUser(user);
+            setUserInfo(user);
+            props.onAuthLogin && props.onAuthLogin(user);
+          })
+          .catch((err) => {
+            console.error(err);
+            showToast(Locale.Chat.NoUser, undefined, 2000);
+          });
+      }
+    } else {
+      console.log("不是企业微信");
+      loadStatSummary();
+    }
+
+    userTimer.current = setInterval(loadStatSummary, 6000 * 1000);
     return () => clearInterval(userTimer.current);
   }, []);
 
@@ -317,9 +333,12 @@ export function SideBar(props: {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <IconButton icon={<UserIcon />} text={getCurrentUser().userName} />
+            <IconButton
+              icon={<UserIcon />}
+              text={getCurrentUser(userInfo)?.userName}
+            />
           </div>
-          {!!getCurrentUser().userId && (
+          {!!getCurrentUser(userInfo)?.userId && (
             <div className={styles["sidebar-action"]}>
               <IconButton
                 icon={<LogoutIcon />}

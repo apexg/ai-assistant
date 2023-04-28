@@ -61,6 +61,13 @@ import { ControllerPool } from "../requests";
 import { Prompt, usePromptStore } from "../store/prompt";
 import Locale from "../locales";
 import Wecom from "../config/wecom";
+import {
+  loadUserInfo,
+  loadUserHeartbeat,
+  getCurrentUser,
+  setCurrentUser,
+  setUserCode,
+} from "./common";
 
 import { IconButton } from "./button";
 import styles from "./home.module.scss";
@@ -434,8 +441,9 @@ export function ChatActions(props: {
 }
 
 export function Chat(props: {
-  onLogin?: (user: any) => void;
-  onLogout?: (callback: (isLogin: boolean) => void) => void;
+  onQRLogin?: (user: any) => void; // 企业微信扫码登录事件
+  onAuthLoginCallback?: (callback: (user: any) => void) => void; // slider企微工作台登录回调
+  onLogoutCallback?: (callback: () => void) => void; // slider退出回调
 }) {
   type RenderMessage = Message & { preview?: boolean };
 
@@ -446,14 +454,6 @@ export function Chat(props: {
   ]);
   const config = useAppConfig();
   const fontSize = config.fontSize;
-
-  const getCurrentUser = () => {
-    const userStorage = localStorage.getItem("current_user");
-    if (userStorage) {
-      return JSON.parse(userStorage);
-    }
-    return null;
-  };
 
   const hasLoginUser = () => {
     return !!getCurrentUser();
@@ -468,6 +468,7 @@ export function Chat(props: {
   const [hitBottom, setHitBottom] = useState(false);
   const [isLogin, setIsLogin] = useState(hasLoginUser());
   const [isShowLoginPanel, setIsShowLoginPanel] = useState(false);
+  const [isShowLoginLoading, setIsShowLoginLoading] = useState(false);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
 
@@ -511,8 +512,6 @@ export function Chat(props: {
     },
   );
 
-  useImperativeHandle(props.onLogout, () => setIsLogin);
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(measure, [userInput]);
 
@@ -545,12 +544,7 @@ export function Chat(props: {
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
 
-    fetch(Wecom.UserHeartbeatApi, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: getCurrentUser()?.userId }),
-    })
-      .then((res) => res.json())
+    loadUserHeartbeat(getCurrentUser()?.userId)
       .then((res) => {
         if (res.result) {
           console.log(Locale.Chat.UserHeartbeatSuccess);
@@ -631,6 +625,15 @@ export function Chat(props: {
     inputRef.current?.focus();
   };
 
+  const logout = () => {
+    setIsLogin(false);
+  };
+
+  const authLogin = (user: any) => {
+    console.log(user);
+    setIsLogin(true);
+  };
+
   let wwLogin: any;
   const wwLoginOptions: any = {
     el: "#ww_login",
@@ -647,33 +650,21 @@ export function Chat(props: {
       console.log(data.isWeComLogin);
     },
     onLoginSuccess(data: any) {
-      localStorage.setItem("ww_code", data.code);
+      setUserCode(data.code);
+      setIsShowLoginPanel(false);
       !!wwLogin && wwLogin.unmount();
+      setIsShowLoginLoading(true);
 
-      fetch(Wecom.UserInfoApi, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: data.code }),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.result && res.result.userid) {
-            const user = {
-              userId: res.result.userid,
-              userName: res.result.username,
-            };
-            setIsShowLoginPanel(false);
-            setIsLogin(true);
-            props.onLogin && props.onLogin(user);
-            localStorage.setItem("current_user", JSON.stringify(user));
-          } else {
-            setIsShowLoginPanel(false);
-            showToast(Locale.Chat.NoUser, undefined, 2000);
-          }
+      loadUserInfo(data.code)
+        .then((user) => {
+          setIsShowLoginLoading(false);
+          setIsLogin(true);
+          props.onQRLogin && props.onQRLogin(user);
+          setCurrentUser(user);
         })
         .catch((err) => {
           console.error(err);
-          setIsShowLoginPanel(false);
+          setIsShowLoginLoading(false);
           showToast(Locale.Chat.NoUser, undefined, 2000);
         });
     },
@@ -682,6 +673,9 @@ export function Chat(props: {
       !!wwLogin && wwLogin.unmount();
     },
   };
+
+  useImperativeHandle(props.onLogoutCallback, () => logout);
+  useImperativeHandle(props.onAuthLoginCallback, () => authLogin);
 
   useEffect(() => {
     if (isShowLoginPanel) {
@@ -914,6 +908,12 @@ export function Chat(props: {
             </div>
           );
         })}
+
+        {isShowLoginLoading && (
+          <div className={styles["chat-login-loading"]}>
+            <LoadingIcon />
+          </div>
+        )}
 
         {isShowLoginPanel && (
           <div id="ww_login" className={styles["chat-login-panel"]}>

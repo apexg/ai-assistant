@@ -724,6 +724,19 @@
   background-color: #ffffff !important;
 }
 
+.chat-login-loading {
+  height: 100px;
+  width: 50px;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-left: -100px;
+  margin-top: -25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @media only screen and (max-width: 600px) {
   .chat-body::-webkit-scrollbar {
     width: var(--bar-width);

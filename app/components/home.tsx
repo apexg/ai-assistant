@@ -79,30 +79,60 @@ const useHasHydrated = () => {
   return hasHydrated;
 };
 
+function useLoginCallbacks() {
+  const sliderQRLoginRef = useRef<(user: any) => void>();
+  const chatAuthLoginRef = useRef<(user: any) => void>();
+  const chatLogoutRef = useRef<() => void>();
+
+  // chat扫码登录，更新slider状态（设置回调）
+  const setQRLoginCallback = (qrLoginCallback: any) => {
+    sliderQRLoginRef.current = qrLoginCallback;
+  };
+  // chat扫码登录，更新slider状态（调用回调）
+  const qrLogin = (user: any) => {
+    sliderQRLoginRef.current && sliderQRLoginRef.current(user);
+  };
+
+  // slider退出，更新chat状态（设置回调）
+  const setLogoutCallback = (logoutCallback: any) => {
+    chatLogoutRef.current = logoutCallback;
+  };
+
+  // slider退出，更新chat状态（调用回调）
+  const logout = () => {
+    chatLogoutRef.current && chatLogoutRef.current();
+  };
+
+  // 企业微信工作台进入登录：slider登录则更新chat状态，chat登录则更新slider状态（设置回调）
+  const setAuthLoginCallback = (authLoginCallback: any) => {
+    chatAuthLoginRef.current = authLoginCallback;
+  };
+
+  // 企业微信工作台进入登录：slider登录则更新chat状态，chat登录则更新slider状态（调用回调）
+  const authLogin = (user: any) => {
+    chatAuthLoginRef.current && chatAuthLoginRef.current(user);
+  };
+
+  return {
+    setQRLoginCallback,
+    qrLogin,
+    setAuthLoginCallback,
+    authLogin,
+    setLogoutCallback,
+    logout,
+  };
+}
+
 function WideScreen() {
   const config = useAppConfig();
-  const sliderRef = useRef<(user: any) => void>();
-  const chatRef = useRef<(isLogin: boolean) => void>();
-
-  const setLoginCallback = (setUserInfo: any) => {
-    sliderRef.current = setUserInfo;
-  };
-
-  const setLogoutCallback = (setIsLogin: any) => {
-    chatRef.current = setIsLogin;
-  };
-
-  const setUserInfo = (user: any) => {
-    if (sliderRef.current) {
-      sliderRef.current(user);
-    }
-  };
-
-  const setLogout = () => {
-    if (chatRef.current) {
-      chatRef.current(false);
-    }
-  };
+  const {
+    setQRLoginCallback,
+    qrLogin,
+    setAuthLoginCallback,
+    authLogin,
+    setLogoutCallback,
+    logout,
+  } = useLoginCallbacks();
 
   return (
     <div
@@ -110,20 +140,31 @@ function WideScreen() {
         config.tightBorder ? styles["tight-container"] : styles.container
       }`}
     >
-      <SideBar onLogin={setLoginCallback} onLogout={setLogout} />
-
+      <SideBar
+        onAuthLogin={authLogin}
+        onLogout={logout}
+        onQRLoginCallback={setQRLoginCallback}
+      />
       <div className={styles["window-content"]}>
         <Routes>
           <Route
             path={Path.Home}
             element={
-              <Chat onLogin={setUserInfo} onLogout={setLogoutCallback} />
+              <Chat
+                onQRLogin={qrLogin}
+                onAuthLoginCallback={setAuthLoginCallback}
+                onLogoutCallback={setLogoutCallback}
+              />
             }
           />
           <Route
             path={Path.Chat}
             element={
-              <Chat onLogin={setUserInfo} onLogout={setLogoutCallback} />
+              <Chat
+                onQRLogin={qrLogin}
+                onAuthLoginCallback={setAuthLoginCallback}
+                onLogoutCallback={setLogoutCallback}
+              />
             }
           />
           <Route path={Path.Settings} element={<Settings />} />
@@ -136,44 +177,34 @@ function WideScreen() {
 function MobileScreen() {
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
-  const sliderRef = useRef<(user: any) => void>();
-  const chatRef = useRef<(isLogin: boolean) => void>();
-
-  const setLoginCallback = (setUserInfo: any) => {
-    sliderRef.current = setUserInfo;
-  };
-
-  const setLogoutCallback = (setIsLogin: any) => {
-    chatRef.current = setIsLogin;
-  };
-
-  const setUserInfo = (user: any) => {
-    if (sliderRef.current) {
-      sliderRef.current(user);
-    }
-  };
-
-  const setLogout = () => {
-    if (chatRef.current) {
-      chatRef.current(false);
-    }
-  };
+  const {
+    setQRLoginCallback,
+    qrLogin,
+    setAuthLoginCallback,
+    authLogin,
+    setLogoutCallback,
+    logout,
+  } = useLoginCallbacks();
 
   return (
     <div className={styles.container}>
       <SideBar
-        onLogin={setLoginCallback}
-        onLogout={setLogout}
+        onAuthLogin={authLogin}
+        onLogout={logout}
+        onQRLoginCallback={setQRLoginCallback}
         className={isHome ? styles["sidebar-show"] : ""}
       />
-
       <div className={styles["window-content"]}>
         <Routes>
           <Route path={Path.Home} element={null} />
           <Route
             path={Path.Chat}
             element={
-              <Chat onLogin={setUserInfo} onLogout={setLogoutCallback} />
+              <Chat
+                onQRLogin={qrLogin}
+                onAuthLoginCallback={setAuthLoginCallback}
+                onLogoutCallback={setLogoutCallback}
+              />
             }
           />
           <Route path={Path.Settings} element={<Settings />} />

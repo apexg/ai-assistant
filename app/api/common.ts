@@ -34,3 +34,38 @@ export async function requestOpenai(req: NextRequest) {
     body: req.body,
   });
 }
+
+export async function request(options: {
+  url: string;
+  method?: string;
+  headers?: Record<string, string>;
+  data?: any;
+}) {
+  try {
+    let opt: Record<string, any> = {
+      method: options.method || "GET",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    };
+
+    if (options.headers) {
+      opt.headers = Object.assign(opt.headers, options.headers);
+    }
+    if (options.data) {
+      opt.body = JSON.stringify(options.data);
+    }
+
+    return await fetch(options.url, opt).then((res) => res.json());
+  } catch (err) {
+    console.error(err);
+    return {
+      error: true,
+      msg: JSON.stringify(err),
+    };
+  }
+}
