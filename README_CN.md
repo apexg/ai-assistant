@@ -1,9 +1,22 @@
-<div align="center">
-<img src="./docs/images/icon.svg" alt="预览"/>
 
+
+
+## 前置条件：
+1. 部署clash 代理，在华为云服务器192.168.0.149 上进行部署
+2. docker run -p 1234:80 -d haishanh/yacd  这个服务用于web配置，不用总在线服务
+3. docker pull dreamacro/clash docker run --name Clash -d -v /root/clash/config.yaml:/root/.config/clash/config.yaml --network="host" --privileged dreamacro/clash   这个服务是clash代理的服务，需要一直启动
+这个服务启动后，就可以进行代理服务，代理url http://192.168.0.149:7890
+4. 启动我们自己的在线用户统计的后端服务/workspace/flask_deployment_to_k8s/ai_install_docker_qy.sh
+5. 启动智能聊天服务：/workspace/flask_deployment_to_k8s/ai_install_docker.sh
+
+<div align="center">
 <h1 align="center">爱德数智AI - 智能助手</h1>
 
+
+
+
 一键免费部署你的私人 ChatGPT 网页应用。
+
 
 [演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [加入 Discord](https://discord.gg/zrhvHCr79N) / [QQ 群](https://user-images.githubusercontent.com/16968934/228190818-7dd00845-e9b9-4363-97e5-44c507ac76da.jpeg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg) / [Donate](#捐赠-donate-usdt)
 
