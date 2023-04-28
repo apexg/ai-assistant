@@ -337,7 +337,7 @@ export function SideBar(props: {
               text={getCurrentUser(userInfo)?.userName}
             />
           </div>
-          {!!getCurrentUser(userInfo)?.userId && (
+          {!!getCurrentUser(userInfo)?.userId && !isWeCom() && (
             <div className={styles["sidebar-action"]}>
               <IconButton
                 icon={<LogoutIcon />}

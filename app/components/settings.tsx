@@ -226,7 +226,7 @@ export function Settings() {
   const isAdmin = () => {
     const currentUser = getCurrentUser();
     if (currentUser) {
-      return !!Wecom.Admin.includes(JSON.parse(currentUser).userId);
+      return !!Wecom.Admin.includes(currentUser.userId);
     }
     return false;
   };

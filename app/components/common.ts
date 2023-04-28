@@ -120,5 +120,4 @@ export function setUserCode(code: any) {
 export function clearUser() {
   localStorage.removeItem("ww_code");
   localStorage.removeItem("current_user");
-  localStorage.removeItem("is_wecom");
 }
