@@ -207,11 +207,8 @@ export function SideBar(props: {
   };
 
   const loadStatSummary = (evt?: any) => {
-    console.log("定时---------------------" + new Date());
     const user_id = getCurrentUser(userInfo)?.userId;
-    console.log("1");
     if (!!user_id) {
-      console.log("2");
       const recent_minutes = getStatTime(evt);
       loadOnlineUser(user_id, recent_minutes)
         .then((res) => {
