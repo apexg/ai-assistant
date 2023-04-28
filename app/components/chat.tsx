@@ -67,6 +67,7 @@ import {
   getCurrentUser,
   setCurrentUser,
   setUserCode,
+  isWeCom,
 } from "./common";
 
 import { IconButton } from "./button";
@@ -968,7 +969,7 @@ export function Chat(props: {
               className={styles["chat-login"] + " clickable"}
               onClick={() => setIsShowLoginPanel(true)}
             >
-              {Locale.Chat.Login}
+              {isWeCom() ? Locale.Chat.WeComLoginTip : Locale.Chat.Login}
             </button>
           </div>
         </div>

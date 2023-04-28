@@ -3,7 +3,7 @@ const wecom =
     ? {
         CorpId: "wxd7b90b4f3cfb65e8",
         AgentId: "1000030",
-        Secret: "jrF7me1RltwpdENlZNCTgMi6ajrD-xrQFNlJ5ZZFnTQ",
+        Secret: "...TQ",
         HomeUrl: "https://scrm.idea-group.cn:9024?from=wecom",
         OAuthRedirectUri: "https://scrm.idea-group.cn:9024/api/wecom",
         RedirectUri: "https://scrm.idea-group.cn:9024/callback.html",

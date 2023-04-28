@@ -7,6 +7,7 @@ import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
+import LoadingIcon from "../icons/three-dots.svg";
 import AddIcon from "../icons/add.svg";
 import UserIcon from "../icons/head.svg";
 import LogoutIcon from "../icons/logout.svg";
@@ -135,6 +136,7 @@ export function SideBar(props: {
   const navigate = useNavigate();
 
   const statTime = useRef(Wecom.OnlineStatDuration);
+  const [isShowLoginLoading, setIsShowLoginLoading] = useState(false);
   const [userInfo, setUserInfo] = useState({
     userId: "",
     userName: Locale.Home.NoLogin,
@@ -188,9 +190,6 @@ export function SideBar(props: {
     setUserInfo({ userId: "", userName: Locale.Home.NoLogin });
     setIsShowStatList(false);
     props.onLogout && props.onLogout();
-
-    if (isWeCom()) {
-    }
   };
 
   const getStatTime = (evt: any) => {
@@ -208,14 +207,17 @@ export function SideBar(props: {
   };
 
   const loadStatSummary = (evt?: any) => {
+    console.log("定时---------------------" + new Date());
     const user_id = getCurrentUser(userInfo)?.userId;
+    console.log("1");
     if (!!user_id) {
+      console.log("2");
       const recent_minutes = getStatTime(evt);
       loadOnlineUser(user_id, recent_minutes)
         .then((res) => {
           if (res.result) {
-            if (res.result.user_code !== getUserCode()) {
-              //setTimeout(logout, 10000);
+            if (!isWeCom() && res.result.user_code !== getUserCode()) {
+              setTimeout(logout, 10000);
               showToast(Locale.Home.Offline, undefined, 10000);
             } else {
               setStatInfo(res.result);
@@ -271,27 +273,27 @@ export function SideBar(props: {
 
   useEffect(() => {
     if (!getCurrentUser(userInfo)?.userId && isWeCom()) {
-      console.log("是企业微信");
       const code = getWeComCode();
       if (code) {
         setUserCode(code);
+        setIsShowLoginLoading(true);
         loadUserInfo(code)
           .then((user) => {
+            setIsShowLoginLoading(false);
             setCurrentUser(user);
             setUserInfo(user);
             props.onAuthLogin && props.onAuthLogin(user);
           })
           .catch((err) => {
             console.error(err);
+            setIsShowLoginLoading(false);
             showToast(Locale.Chat.NoUser, undefined, 2000);
           });
       }
-    } else {
-      console.log("不是企业微信");
-      loadStatSummary();
     }
 
-    userTimer.current = setInterval(loadStatSummary, 6000 * 1000);
+    loadStatSummary();
+    userTimer.current = setInterval(loadStatSummary, 60 * 1000);
     return () => clearInterval(userTimer.current);
   }, []);
 
@@ -376,6 +378,12 @@ export function SideBar(props: {
           </a>
         </div>
       </div>
+
+      {isShowLoginLoading && (
+        <div className={styles["chat-login-loading"]}>
+          <LoadingIcon />
+        </div>
+      )}
 
       {isShowStatList ? (
         <div className={styles["stat-list"]}>

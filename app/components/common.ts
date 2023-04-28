@@ -70,19 +70,25 @@ export function loadUserHeartbeat(userId: string) {
 }
 
 export function getWeComCode() {
-  return new URLSearchParams(window.location.search)?.get("code");
+  if (sessionStorage.getItem("is_first") === "true") {
+    sessionStorage.removeItem("is_first");
+    return new URLSearchParams(window.location.search)?.get("code");
+  }
+  return null;
 }
 
 export function isWeCom() {
-  if (localStorage.getItem("is_wecom") === "true") {
+  if (sessionStorage.getItem("is_wecom") === "true") {
     return true;
-  } else if (
-    !!getWeComCode() &&
-    new URLSearchParams(window.location.search)?.get("from") === "wecom"
-  ) {
-    localStorage.setItem("is_wecom", "true");
-    return true;
+  } else {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams?.get("code") && urlParams?.get("from") === "wecom") {
+      sessionStorage.setItem("is_wecom", "true");
+      sessionStorage.setItem("is_first", "true");
+      return true;
+    }
   }
+
   return false;
 }
 

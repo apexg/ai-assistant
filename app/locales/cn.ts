@@ -30,6 +30,7 @@ const cn = {
     },
     Send: "发送",
     Login: "企业微信扫码登录",
+    WeComLoginTip: "点击按钮, 长按识别二维码",
     NoLogin: "未登录",
     NoUser: "登录失败，未获取到用户信息。",
     UserHeartbeatSuccess: "用户心跳成功",

@@ -31,6 +31,7 @@ const tw: LocaleType = {
     },
     Send: "發送",
     Login: "企業微信掃碼登錄",
+    WeComLoginTip: "點擊按鈕, 長按識別二維碼",
     NoLogin: "未登錄",
     NoUser: "登錄失敗，未獲取到用戶信息。",
     UserHeartbeatSuccess: "用戶心跳成功",

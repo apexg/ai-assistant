@@ -32,6 +32,7 @@ const it: LocaleType = {
     },
     Send: "Invia",
     Login: "QR Code Sign-In With WeCom",
+    WeComLoginTip: "Click and hold the QR Code to scan",
     NoLogin: "Exited",
     NoUser: "Login failed, user not found.",
     UserHeartbeatSuccess: "User heartbeat successful",
