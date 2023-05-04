@@ -211,7 +211,7 @@ export function Settings() {
   const [loadingUsage, setLoadingUsage] = useState(false);
   function checkUsage() {
     setLoadingUsage(true);
-    updateStore.updateUsage().finally(() => {
+    updateStore.updateUsage(true).finally(() => {
       setLoadingUsage(false);
     });
   }
