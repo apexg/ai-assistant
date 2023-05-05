@@ -103,8 +103,9 @@ export async function requestUsage() {
       .padStart(2, "0")}`;
   const ONE_DAY = 2 * 24 * 60 * 60 * 1000;
   const now = new Date(Date.now() + ONE_DAY);
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const startDate = formatDate(startOfMonth);
+  //const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  //const startDate = formatDate(startOfMonth);
+  const startDate = formatDate(new Date(Date.now() - 365 * 24 * 3600 * 1000));
   const endDate = formatDate(now);
 
   const [used, subs] = await Promise.all([
