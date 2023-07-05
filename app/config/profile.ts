@@ -23,7 +23,7 @@ const profile =
         OnlineUserApi: "https://apexg.zeabur.app/api/chat/online/stat",
         OnlineUserListApi: "https://apexg.zeabur.app/api/chat/online/list",
         OnlineStatDuration: 1,
-        Admin: ["camin"]
+        Admin: ["zxg"]
       };
 
 export default profile;
