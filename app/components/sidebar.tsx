@@ -28,7 +28,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { isMobileScreen, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { setInterval } from "timers";
-import Wecom from "../config/wecom";
+import Profile from "../config/profile";
 import {
   loadOnlineUser,
   loadOnlineUserList,
@@ -38,6 +38,7 @@ import {
   getUserCode,
   setUserCode,
   clearUser,
+  isAdmin,
   isWeCom,
   getWeComCode,
 } from "./common";
@@ -135,38 +136,43 @@ export function SideBar(props: {
   const { onDragMouseDown, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
 
-  const statTime = useRef(Wecom.OnlineStatDuration);
+  const statTime = useRef(Profile.OnlineStatDuration);
   const [isShowLoginLoading, setIsShowLoginLoading] = useState(false);
   const [userInfo, setUserInfo] = useState({
     userId: "",
     userName: Locale.Home.NoLogin,
   });
   const [statInfo, setStatInfo] = useState({
-    online_users_count: 0,
-    total_request_count: 0,
-    user_code: "",
+    userCnt: 0,
+    questCnt: 0,
   });
   const [isShowStatList, setIsShowStatList] = useState(false);
   const [statList, setStatList] = useState({
-    online_users_count: 0,
-    total_request_count: 0,
-    user_requests_detail: [],
+    userCnt: 0,
+    questCnt: 0,
+    quests: [],
   });
 
   const userTimer = useRef<NodeJS.Timeout>();
 
-  const getDisplayTime = (dateTimeString: string) => {
+  const getDisplayTime = (timestamp: number) => {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
     const now = new Date();
-    const time = new Date(dateTimeString);
 
-    if (time.getFullYear() === now.getFullYear()) {
-      if (time.toDateString() === now.toDateString()) {
-        return dateTimeString.substring(11);
+    if (year === now.getFullYear()) {
+      if (date.toDateString() === now.toDateString()) {
+        return `${hours}:${minutes}:${seconds}`;
       } else {
-        return dateTimeString.substring(5);
+        return `${month}-${day} ${hours}:${minutes}:${seconds}`;
       }
     }
-    return dateTimeString;
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   };
 
   const deleteSession = () => {
@@ -203,20 +209,20 @@ export function SideBar(props: {
     } else {
       recentMinutes = statTime.current;
     }
-    return recentMinutes;
+    return Date.now() - recentMinutes * 60 * 1000;
   };
 
   const loadStatSummary = (evt?: any) => {
     const userId = getCurrentUser(userInfo)?.userId;
     if (!!userId) {
-      const recentMinutes = getStatTime(evt);
-      loadOnlineUser(userId, recentMinutes)
+      const statTime = getStatTime(evt);
+      loadOnlineUser(userId, statTime)
         .then((res) => {
           if (res.result) {
-            if (!isWeCom() && res.result.user_code !== getUserCode()) {
+            if (!isWeCom() && res.result.userCode !== getUserCode()) {
               setTimeout(logout, 10000);
               showToast(Locale.Home.Offline, undefined, 10000);
-            } else {
+            } else if (isAdmin()) {
               setStatInfo(res.result);
             }
           } else {
@@ -235,18 +241,15 @@ export function SideBar(props: {
   };
 
   const loadStatList = (evt: any) => {
-    const recentMinutes = getStatTime(evt);
-    loadOnlineUserList(recentMinutes)
+    const statTime = getStatTime(evt);
+    loadOnlineUserList(statTime)
       .then((res) => {
         if (res.result) {
-          setStatList(res.result);
-          setStatInfo(
-            Object.assign(
-              {},
-              statInfo,
-              (({ user_requests_detail, ...rest }) => rest)(res.result),
-            ),
-          );
+          const userCnt = res.result.length;
+          const questCnt = res.result.reduce((acc: string, curr: any) =>  parseInt(acc) + parseInt(curr.questCnt), 0);
+
+          setStatList({ userCnt, questCnt, quests: res.result });
+          setStatInfo(Object.assign({}, statInfo, { userCnt, questCnt }));
         } else {
           showToast(Locale.Home.GetOnlineStatListFail, undefined, 2000);
         }
@@ -270,11 +273,11 @@ export function SideBar(props: {
 
   useEffect(() => {
     if (!getCurrentUser(userInfo)?.userId && isWeCom()) {
-      const code = getWeComCode();
-      if (code) {
-        setUserCode(code);
+      const userCode = getWeComCode();
+      if (userCode) {
+        setUserCode(userCode);
         setIsShowLoginLoading(true);
-        loadUserInfo(code)
+        loadUserInfo(userCode)
           .then((user) => {
             setIsShowLoginLoading(false);
             setCurrentUser(user);
@@ -357,6 +360,7 @@ export function SideBar(props: {
         </div>
       </div>
 
+      {isAdmin() && (
       <div className={styles["sidebar-tail"]}>
         <div className={styles["sidebar-actions"]}>
           <span className={styles["sidebar-stat"]}>
@@ -368,13 +372,14 @@ export function SideBar(props: {
             onClick={() => setIsShowStatList(false)}
           />
           <a className={styles["sidebar-stat"]} onClick={showStatList}>
-            {Locale.Home.OnlineCount(statInfo.online_users_count)}
+            {Locale.Home.OnlineCount(statInfo.userCnt)}
           </a>
           <a className={styles["sidebar-stat"]} onClick={showStatList}>
-            {Locale.Home.MsgCount(statInfo.total_request_count)}
+            {Locale.Home.MsgCount(statInfo.questCnt)}
           </a>
         </div>
       </div>
+      )}
 
       {isShowLoginLoading && (
         <div className={styles["chat-login-loading"]}>
@@ -395,9 +400,9 @@ export function SideBar(props: {
                 onChange={loadStatList}
               />
             </div>
-            <div>{Locale.Home.OnlineCount(statList.online_users_count)}</div>
+            <div>{Locale.Home.OnlineCount(statList.userCnt)}</div>
             <div>
-              {statList.total_request_count} {Locale.Home.StatMsgCountColName}
+              {Locale.Home.MsgCount(statList.questCnt)}
             </div>
           </div>
           <div className={styles["stat-list-data"]}>
@@ -411,13 +416,13 @@ export function SideBar(props: {
                 </tr>
               </thead>
               <tbody>
-                {statList.user_requests_detail.map(
-                  ({ name, request_count, latest_time }, index) => (
+                {statList.quests.map(
+                  ({ name, questCnt, questTime }, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{name}</td>
-                      <td>{getDisplayTime(latest_time)}</td>
-                      <td>{request_count}</td>
+                      <td>{getDisplayTime(parseInt(questTime))}</td>
+                      <td>{questCnt}</td>
                     </tr>
                   ),
                 )}
@@ -427,7 +432,7 @@ export function SideBar(props: {
                   <td>{Locale.Home.StatTotalColName}</td>
                   <td></td>
                   <td></td>
-                  <td>{statList.total_request_count}</td>
+                  <td>{statList.questCnt}</td>
                 </tr>
               </tfoot>
             </table>

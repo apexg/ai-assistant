@@ -1,6 +1,6 @@
 {
-    "name": "IdeaAI Chat Web",
-    "short_name": "IdeaChat",
+    "name": "Chat Bot Web",
+    "short_name": "ChatBotChat",
     "icons": [
       {
         "src": "/android-chrome-192x192.png",

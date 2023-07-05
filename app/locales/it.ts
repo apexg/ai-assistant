@@ -11,7 +11,7 @@ const it: LocaleType = {
     ChatItemCount: (count: number) => `${count} messaggi`,
   },
   Chat: {
-    SubTitle: (count: number) => `${count} messaggi con 爱德AI`,
+    SubTitle: (count: number) => `${count} messaggi con Chat Bot`,
     Actions: {
       ChatList: "Vai alla Chat List",
       CompressedHistory: "Prompt di memoria della cronologia compressa",
@@ -43,7 +43,7 @@ const it: LocaleType = {
     Copy: "Copia tutto",
     Download: "Scarica",
     MessageFromYou: "Messaggio da te",
-    MessageFromChatGPT: "Messaggio da IdeaAI",
+    MessageFromChatGPT: "Messaggio da Chat Bot",
   },
   Memory: {
     Title: "Prompt di memoria",
@@ -59,14 +59,14 @@ const it: LocaleType = {
     DeleteChat: "Confermare la cancellazione della conversazione selezionata?",
     DeleteToast: "Chat Cancellata",
     Revert: "Revert",
-    HomeTitle: "Idea AI",
+    HomeTitle: "Chat Bot",
     HomeDesc: "Build your own intelligent assistant",
     Logout: "Logout",
     NoLogin: "Exited",
     Offline:
       "You have logged in elsewhere and will be forcibly offline in 10 seconds.",
     OnlineCount: (count: number) => `${count}  people online`,
-    MsgCount: (count: number) => `${count} Latest Questions`,
+    MsgCount: (count: number) => `${count} Questions`,
     StatTitle: "Online Statistics",
     StatFilterLabel: "Last",
     StatFilterMinute: "Minute(s)",

@@ -48,12 +48,7 @@ export function middleware(req: NextRequest) {
     const apiKey = serverConfig.apiKey;
     if (apiKey) {
       console.log("[Auth] set system token");
-      if (apiKey.includes(",")) {
-        const apiKeys = apiKey.split(",")
-        req.headers.set("token", apiKeys[Math.floor(Math.random() * apiKeys.length)]);
-      } else {
-        req.headers.set("token", apiKey);
-      }
+      req.headers.set("token", apiKey);
     } else {
       return NextResponse.json(
         {

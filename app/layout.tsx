@@ -7,10 +7,10 @@ import { getBuildConfig } from "./config/build";
 const buildConfig = getBuildConfig();
 
 export const metadata = {
-  title: "爱德数智AI - 智能助手",
+  title: "智能助手",
   description: "您的个人聊天机器人。",
   appleWebApp: {
-    title: "爱德数智AI - 智能助手",
+    title: "智能助手",
     statusBarStyle: "default",
   },
   themeColor: "#fafafa",

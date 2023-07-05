@@ -3,6 +3,7 @@
 const nextConfig = {
   experimental: {
     appDir: true,
+    serverComponentsExternalPackages: ["mysql2"],
   },
   webpack(config) {
     config.module.rules.push({

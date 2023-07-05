@@ -1,0 +1,12 @@
+/app
+/public
+/scripts
+Dockerfile
+middleware.ts
+next.config.js
+package.json
+tsconfig.json
+.eslintignore
+.eslintrc.json
+.lintstagedrc.json
+.prettierrc.js

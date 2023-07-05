@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, HTMLProps, useRef } from "react";
-import { getCurrentUser } from "./common";
+import { isAdmin } from "./common";
 
 import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
 
@@ -36,7 +36,7 @@ import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
-import Wecom from "../config/wecom";
+import Profile from "../config/profile";
 
 function UserPromptModal(props: { onClose?: () => void }) {
   const promptStore = usePromptStore();
@@ -223,14 +223,6 @@ export function Settings() {
     [],
   );
 
-  const isAdmin = () => {
-    const currentUser = getCurrentUser();
-    if (currentUser) {
-      return !!Wecom.Admin.includes(currentUser.userId);
-    }
-    return false;
-  };
-
   const promptStore = usePromptStore();
   const builtinCount = SearchService.count.builtin;
   const customCount = promptStore.getUserPrompts().length ?? 0;
@@ -239,8 +231,10 @@ export function Settings() {
   const showUsage = accessStore.isAuthorized();
   useEffect(() => {
     // checks per minutes
-    checkUpdate();
-    showUsage && checkUsage();
+    if (isAdmin()) {
+      checkUpdate();
+      showUsage && checkUsage();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

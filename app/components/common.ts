@@ -1,5 +1,6 @@
+import querystring from "querystring";
 import Locale from "../locales";
-import Wecom from "../config/wecom";
+import Profile from "../config/profile";
 
 // 公共的请求方法
 export async function request(options: {
@@ -23,42 +24,44 @@ export async function request(options: {
     opt.headers = Object.assign(opt.headers, options.headers);
   }
   if (options.data) {
-    opt.body = JSON.stringify(options.data);
+    if (['GET', 'HEAD'].includes(opt.method.toUpperCase())) {
+      options.url = `${options.url}${options.url.includes('?') ? '&' : '?'}${querystring.stringify(options.data)}`;
+    } else {
+      opt.body = JSON.stringify(options.data);
+    }
   }
 
   return fetch(options.url, opt).then((res) => res.json());
 }
 
 // 获取在线统计（定时执行）
-export function loadOnlineUser(userId: string, recentMinutes: number) {
-  return request({
-    url: Wecom.OnlineUserApi,
-    method: "POST",
-    data: { user_id: userId, recent_minutes: recentMinutes },
+export function loadOnlineUser(userId: string, statTime: number) {
+  return isAdmin() ? request({
+    url: Profile.OnlineUserApi,
+    data: { userId, statTime },
+  }) : request({
+    url: Profile.UserCodeApi,
+    data: { userId },
   });
 }
 
 // 获取在线统计清单
-export function loadOnlineUserList(recentMinutes: number) {
+export function loadOnlineUserList(statTime: number) {
   return request({
-    url: Wecom.OnlineUserListApi,
-    method: "POST",
-    data: { recent_minutes: recentMinutes },
+    url: Profile.OnlineUserListApi,
+    data: { statTime },
   });
 }
 
 // 根据企业微信code获取用户信息
 export function loadUserInfo(userCode: string) {
   return request({
-    url: Wecom.UserInfoApi,
+    url: Profile.UserInfoApi,
     method: "POST",
-    data: { text: userCode },
+    data: { userCode },
   }).then((res) => {
-    if (res.result && res.result.userid) {
-      return {
-        userId: res.result.userid,
-        userName: res.result.username,
-      };
+    if (res && res.userId) {
+      return res;
     } else {
       throw new Error(Locale.Chat.NoUser);
     }
@@ -66,12 +69,21 @@ export function loadUserInfo(userCode: string) {
 }
 
 // 用户心跳（提问一次算一次心跳）
-export function loadUserHeartbeat(userId: string) {
+export function loadUserHeartbeat(userId: string, questTime: number) {
   return request({
-    url: Wecom.UserHeartbeatApi,
+    url: Profile.UserHeartbeatApi,
     method: "POST",
-    data: { user_id: userId },
+    data: { userId, questTime },
   });
+}
+
+// 是否管理员
+export function isAdmin() {
+  const currentUser = getCurrentUser();
+  if (currentUser) {
+    return !!Profile.Admin.includes(currentUser.userId);
+  }
+  return false;
 }
 
 // 从url获取企业微信code

@@ -58,7 +58,11 @@ export async function request(options: {
       opt.headers = Object.assign(opt.headers, options.headers);
     }
     if (options.data) {
-      opt.body = JSON.stringify(options.data);
+      if (['GET', 'HEAD'].includes(opt.method.toUpperCase())) {
+        options.url = `${options.url}${options.url.includes('?') ? '&' : '?'}${new URLSearchParams(options.data).toString()}`;
+      } else {
+        opt.body = JSON.stringify(options.data);
+      }
     }
 
     return await fetch(options.url, opt).then((res) => res.json());

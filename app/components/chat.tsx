@@ -60,7 +60,7 @@ import dynamic from "next/dynamic";
 import { ControllerPool } from "../requests";
 import { Prompt, usePromptStore } from "../store/prompt";
 import Locale from "../locales";
-import Wecom from "../config/wecom";
+import Profile from "../config/profile";
 import {
   loadUserInfo,
   loadUserHeartbeat,
@@ -545,9 +545,9 @@ export function Chat(props: {
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
 
-    loadUserHeartbeat(getCurrentUser()?.userId)
+    loadUserHeartbeat(getCurrentUser()?.userId, Date.now())
       .then((res) => {
-        if (res.result) {
+        if (res && res.code === 0) {
           console.log(Locale.Chat.UserHeartbeatSuccess);
         } else {
           console.log(Locale.Chat.UserHeartbeatFail);
@@ -640,10 +640,10 @@ export function Chat(props: {
     el: "#ww_login",
     params: {
       login_type: "CorpApp",
-      appid: Wecom.CorpId,
-      agentid: Wecom.AgentId,
-      redirect_uri: Wecom.RedirectUri,
-      state: "IdeaAI",
+      appid: Profile.CorpId,
+      agentid: Profile.AgentId,
+      redirect_uri: Profile.RedirectUri,
+      state: "ChatBot",
       panel_size: "small",
       redirect_type: "callback",
     },
@@ -680,7 +680,6 @@ export function Chat(props: {
 
   useEffect(() => {
     if (isShowLoginPanel) {
-      console.log(JSON.stringify(wwLoginOptions));
       wwLogin = ww.createWWLoginPanel(wwLoginOptions);
     } else {
       !!wwLogin && wwLogin.unmount();

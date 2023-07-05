@@ -10,7 +10,7 @@
 5. 启动智能聊天服务：/workspace/flask_deployment_to_k8s/ai_install_docker.sh
 
 <div align="center">
-<h1 align="center">爱德数智AI - 智能助手</h1>
+<h1 align="center">智能助手</h1>
 
 
 

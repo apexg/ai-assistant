@@ -11,7 +11,7 @@ const tr: LocaleType = {
     ChatItemCount: (count: number) => `${count} mesaj`,
   },
   Chat: {
-    SubTitle: (count: number) => `爱德AI tarafından ${count} mesaj`,
+    SubTitle: (count: number) => `Chat Bot tarafından ${count} mesaj`,
     Actions: {
       ChatList: "Sohbet Listesine Git",
       CompressedHistory: "Sıkıştırılmış Geçmiş Bellek Komutu",
@@ -43,7 +43,7 @@ const tr: LocaleType = {
     Copy: "Tümünü Kopyala",
     Download: "İndir",
     MessageFromYou: "Sizin Mesajınız",
-    MessageFromChatGPT: "IdeaAI'nin Mesajı",
+    MessageFromChatGPT: "Chat Bot'nin Mesajı",
   },
   Memory: {
     Title: "Bellek Komutları",
@@ -59,14 +59,14 @@ const tr: LocaleType = {
     DeleteChat: "Seçili sohbeti silmeyi onaylıyor musunuz?",
     DeleteToast: "Sohbet Silindi",
     Revert: "Geri Al",
-    HomeTitle: "Idea AI",
+    HomeTitle: "Chat Bot",
     HomeDesc: "Build your own intelligent assistant",
     Logout: "Logout",
     NoLogin: "Exited",
     Offline:
       "You have logged in elsewhere and will be forcibly offline in 10 seconds.",
     OnlineCount: (count: number) => `${count}  people online`,
-    MsgCount: (count: number) => `${count} Latest Questions`,
+    MsgCount: (count: number) => `${count} Questions`,
     StatTitle: "Online Statistics",
     StatFilterLabel: "Last",
     StatFilterMinute: "Minute(s)",
