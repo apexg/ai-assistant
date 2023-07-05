@@ -17,9 +17,9 @@ const profile =
       }
     : {
         CorpId: Profile.CorpId,
-        Secret: "-bZzNz3bsRkZjyFx2BJW9EWN8wyEeZBBeQoPqL4Wddw",
-        HomeUrl: "https://laughsky.zeabur.app?from=wecom",
-        OAuthRedirectUri: "https://laughsky.zeabur.app/api/wecom",
+        Secret: "DJd2sxEjxpQdqjcgi_Bit05Ex9Upx-ZJ7l3hqNTR5vo",
+        HomeUrl: "https://apexg.zeabur.app?from=wecom",
+        OAuthRedirectUri: "https://apexg.zeabur.app/api/wecom",
         MySQL: {
           Host: "124.71.215.126",
           Port: "13306",
