@@ -18,7 +18,13 @@ function getIP(req: NextRequest) {
 
   return ip;
 }
-
+let count = 0;
+function counter(length: number) {
+  if (count >= length) {
+    count = 0;
+  }
+  return count++;
+}
 export function middleware(req: NextRequest) {
   const accessCode = req.headers.get("access-code");
   const token = req.headers.get("token");
@@ -50,7 +56,8 @@ export function middleware(req: NextRequest) {
       console.log("[Auth] set system token");
       if (apiKey.includes(",")) {
         const apiKeys = apiKey.split(",")
-        req.headers.set("token", apiKeys[Math.floor(Math.random() * apiKeys.length)]);
+        // req.headers.set("token", apiKeys[Math.floor(Math.random() * apiKeys.length)]);
+        req.headers.set("token", apiKeys[counter(apiKeys.length)]);
       } else {
         req.headers.set("token", apiKey);
       }
