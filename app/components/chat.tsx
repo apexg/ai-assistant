@@ -534,6 +534,18 @@ export function Chat(props: {
     }
   };
 
+  const beatHeart = () => {
+    loadUserHeartbeat(getCurrentUser()?.userId, Date.now())
+      .then((res) => {
+        if (res && res.code === 0) {
+          console.log(Locale.Chat.UserHeartbeatSuccess);
+        } else {
+          console.log(Locale.Chat.UserHeartbeatFail);
+        }
+      })
+      .catch((err) => console.error(err));
+  }
+
   // submit user input
   const onUserSubmit = () => {
     if (userInput.length <= 0) return;
@@ -545,15 +557,7 @@ export function Chat(props: {
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
 
-    loadUserHeartbeat(getCurrentUser()?.userId, Date.now())
-      .then((res) => {
-        if (res && res.code === 0) {
-          console.log(Locale.Chat.UserHeartbeatSuccess);
-        } else {
-          console.log(Locale.Chat.UserHeartbeatFail);
-        }
-      })
-      .catch((err) => console.error(err));
+    beatHeart();
   };
 
   // stop response
@@ -624,6 +628,8 @@ export function Chat(props: {
     deleteMessage(userIndex);
     chatStore.onUserInput(content).then(() => setIsLoading(false));
     inputRef.current?.focus();
+
+    beatHeart();
   };
 
   const logout = () => {
