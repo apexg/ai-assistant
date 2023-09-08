@@ -15,7 +15,7 @@ const profile =
       }
     : {
         CorpId: "ww3d958fa2c53f1e60",
-        AgentId: "1000047",
+        AgentId: "1000038",
         RedirectUri: "https://ai.idea-group.cn:7850/callback.html",
         UserInfoApi: "https://ai.idea-group.cn:7850/api/chat/user",
         UserCodeApi: "https://ai.idea-group.cn:7850/api/chat/code",

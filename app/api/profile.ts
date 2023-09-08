@@ -17,7 +17,7 @@ const profile =
       }
     : {
         CorpId: Profile.CorpId,
-        Secret: "cxOdT1_Uf2TI2FDOlLb49xcHRCvAgLquaoUxFXrwSUQ",
+        Secret: "ZEJY_QyIkM3pjYrRCCxVLIzarU5jkvgIv0fpSxdSRqc",
         HomeUrl: "https://ai.idea-group.cn:7850?from=wecom",
         OAuthRedirectUri: "https://ai.idea-group.cn:7850/api/wecom",
         MySQL: {
