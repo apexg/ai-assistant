@@ -38,7 +38,6 @@ import {
   getUserCode,
   setUserCode,
   clearUser,
-  isAdmin,
   isWeCom,
   getWeComCode,
 } from "./common";
@@ -222,7 +221,7 @@ export function SideBar(props: {
             if (!isWeCom() && res.result.userCode !== getUserCode()) {
               setTimeout(logout, 10000);
               showToast(Locale.Home.Offline, undefined, 10000);
-            } else if (isAdmin()) {
+            } else {
               setStatInfo(res.result);
             }
           } else {
@@ -360,7 +359,6 @@ export function SideBar(props: {
         </div>
       </div>
 
-      {isAdmin() && (
       <div className={styles["sidebar-tail"]}>
         <div className={styles["sidebar-actions"]}>
           <span className={styles["sidebar-stat"]}>
@@ -379,7 +377,6 @@ export function SideBar(props: {
           </a>
         </div>
       </div>
-      )}
 
       {isShowLoginLoading && (
         <div className={styles["chat-login-loading"]}>

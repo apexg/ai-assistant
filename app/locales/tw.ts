@@ -10,7 +10,7 @@ const tw: LocaleType = {
     ChatItemCount: (count: number) => `${count} 條對話`,
   },
   Chat: {
-    SubTitle: (count: number) => `您已經與 智能助手 進行了 ${count} 條對話`,
+    SubTitle: (count: number) => `您已經與 爱德数智AI 進行了 ${count} 條對話`,
     Actions: {
       ChatList: "查看訊息列表",
       CompressedHistory: "查看壓縮後的歷史 Prompt",
@@ -42,7 +42,7 @@ const tw: LocaleType = {
     Copy: "複製全部",
     Download: "下載檔案",
     MessageFromYou: "來自您的訊息",
-    MessageFromChatGPT: "來自 智能助手 的訊息",
+    MessageFromChatGPT: "來自 爱德数智AI 的訊息",
   },
   Memory: {
     Title: "上下文記憶 Prompt",
@@ -57,7 +57,7 @@ const tw: LocaleType = {
     DeleteChat: "確定要刪除選取的對話嗎？",
     DeleteToast: "已刪除對話",
     Revert: "撤銷",
-    HomeTitle: "智能助手",
+    HomeTitle: "爱德数智AI",
     HomeDesc: "構建您自己的智能助手",
     Logout: "退出",
     NoLogin: "未登錄",

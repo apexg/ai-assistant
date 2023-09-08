@@ -17,15 +17,15 @@ const profile =
       }
     : {
         CorpId: Profile.CorpId,
-        Secret: "DJd2sxEjxpQdqjcgi_Bit05Ex9Upx-ZJ7l3hqNTR5vo",
-        HomeUrl: "https://apexg.zeabur.app?from=wecom",
-        OAuthRedirectUri: "https://apexg.zeabur.app/api/wecom",
+        Secret: "cxOdT1_Uf2TI2FDOlLb49xcHRCvAgLquaoUxFXrwSUQ",
+        HomeUrl: "https://ai.idea-group.cn:7850?from=wecom",
+        OAuthRedirectUri: "https://ai.idea-group.cn:7850/api/wecom",
         MySQL: {
           Host: "124.71.215.126",
           Port: "13306",
           User: "cam",
           Pwd: "QAZwsx123",
-          Database: "cam"
+          Database: "gpt"
         }
       };
 

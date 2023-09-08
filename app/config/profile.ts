@@ -14,16 +14,16 @@ const profile =
         Admin: ["camin"]
       }
     : {
-        CorpId: "wxa31c5a6be71ee9b7",
-        AgentId: "5",
-        RedirectUri: "https://apexg.zeabur.app/callback.html",
-        UserInfoApi: "https://apexg.zeabur.app/api/chat/user",
-        UserCodeApi: "https://apexg.zeabur.app/api/chat/code",
-        UserHeartbeatApi: "https://apexg.zeabur.app/api/chat/heartbeat",
-        OnlineUserApi: "https://apexg.zeabur.app/api/chat/online/stat",
-        OnlineUserListApi: "https://apexg.zeabur.app/api/chat/online/list",
+        CorpId: "ww3d958fa2c53f1e60",
+        AgentId: "1000047",
+        RedirectUri: "https://ai.idea-group.cn:7850/callback.html",
+        UserInfoApi: "https://ai.idea-group.cn:7850/api/chat/user",
+        UserCodeApi: "https://ai.idea-group.cn:7850/api/chat/code",
+        UserHeartbeatApi: "https://ai.idea-group.cn:7850/api/chat/heartbeat",
+        OnlineUserApi: "https://ai.idea-group.cn:7850/api/chat/online/stat",
+        OnlineUserListApi: "https://ai.idea-group.cn:7850/api/chat/online/list",
         OnlineStatDuration: 1,
-        Admin: ["zxg"]
+        Admin: ["zxg", "camin"]
       };
 
 export default profile;
