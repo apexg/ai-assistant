@@ -23,7 +23,7 @@ const profile =
         OnlineUserApi: "https://ai.idea-group.cn:7850/api/chat/online/stat",
         OnlineUserListApi: "https://ai.idea-group.cn:7850/api/chat/online/list",
         OnlineStatDuration: 1,
-        Admin: ["zxg", "camin"]
+        Admin: ["qy0197eb6db3bff27e531cca3318", "qy015bebb2b3e9f27a53c839ebe7"]
       };
 
 export default profile;
