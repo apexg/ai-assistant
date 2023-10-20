@@ -16,12 +16,12 @@ const profile =
     : {
         CorpId: "wxa31c5a6be71ee9b7",
         AgentId: "5",
-        RedirectUri: "https://apexg.zeabur.app/callback.html",
-        UserInfoApi: "https://apexg.zeabur.app/api/chat/user",
-        UserCodeApi: "https://apexg.zeabur.app/api/chat/code",
-        UserHeartbeatApi: "https://apexg.zeabur.app/api/chat/heartbeat",
-        OnlineUserApi: "https://apexg.zeabur.app/api/chat/online/stat",
-        OnlineUserListApi: "https://apexg.zeabur.app/api/chat/online/list",
+        RedirectUri: "https://apexg1.zeabur.app/callback.html",
+        UserInfoApi: "https://apexg1.zeabur.app/api/chat/user",
+        UserCodeApi: "https://apexg1.zeabur.app/api/chat/code",
+        UserHeartbeatApi: "https://apexg1.zeabur.app/api/chat/heartbeat",
+        OnlineUserApi: "https://apexg1.zeabur.app/api/chat/online/stat",
+        OnlineUserListApi: "https://apexg1.zeabur.app/api/chat/online/list",
         OnlineStatDuration: 1,
         Admin: ["zxg"]
       };
