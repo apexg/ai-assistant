@@ -18,8 +18,8 @@ const profile =
     : {
         CorpId: Profile.CorpId,
         Secret: "DJd2sxEjxpQdqjcgi_Bit05Ex9Upx-ZJ7l3hqNTR5vo",
-        HomeUrl: "https://apexg1.zeabur.app?from=wecom",
-        OAuthRedirectUri: "https://apexg1.zeabur.app/api/wecom",
+        HomeUrl: "https://apexg1000.idea-group.cn?from=wecom",
+        OAuthRedirectUri: "https://apexg1000.idea-group.cn/api/wecom",
         MySQL: {
           Host: "124.71.215.126",
           Port: "13306",
