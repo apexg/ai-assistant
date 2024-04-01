@@ -36,6 +36,7 @@ import {
   getCurrentUser,
   setCurrentUser,
   getUserCode,
+  isLoginUser,
   setUserCode,
   clearUser,
   isAdmin,
@@ -158,11 +159,11 @@ export function SideBar(props: {
   const getDisplayTime = (timestamp: number) => {
     const date = new Date(timestamp);
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
     const now = new Date();
 
     if (year === now.getFullYear()) {
@@ -219,7 +220,7 @@ export function SideBar(props: {
       loadOnlineUser(userId, statTime)
         .then((res) => {
           if (res.result) {
-            if (!isWeCom() && res.result.userCode !== getUserCode()) {
+            if (!isWeCom() && !isLoginUser(res.result.userCode)) {
               setTimeout(logout, 10000);
               showToast(Locale.Home.Offline, undefined, 10000);
             } else if (isAdmin()) {
@@ -246,7 +247,10 @@ export function SideBar(props: {
       .then((res) => {
         if (res.result) {
           const userCnt = res.result.length;
-          const questCnt = res.result.reduce((acc: string, curr: any) =>  parseInt(acc) + parseInt(curr.questCnt), 0);
+          const questCnt = res.result.reduce(
+            (acc: string, curr: any) => parseInt(acc) + parseInt(curr.questCnt),
+            0,
+          );
 
           setStatList({ userCnt, questCnt, quests: res.result });
           setStatInfo(Object.assign({}, statInfo, { userCnt, questCnt }));
@@ -361,24 +365,24 @@ export function SideBar(props: {
       </div>
 
       {isAdmin() && (
-      <div className={styles["sidebar-tail"]}>
-        <div className={styles["sidebar-actions"]}>
-          <span className={styles["sidebar-stat"]}>
-            {Locale.Home.StatFilterLabel}
-          </span>
-          <TimeDurationSelect
-            statTime={statTime.current}
-            onChange={loadStatSummary}
-            onClick={() => setIsShowStatList(false)}
-          />
-          <a className={styles["sidebar-stat"]} onClick={showStatList}>
-            {Locale.Home.OnlineCount(statInfo.userCnt)}
-          </a>
-          <a className={styles["sidebar-stat"]} onClick={showStatList}>
-            {Locale.Home.MsgCount(statInfo.questCnt)}
-          </a>
+        <div className={styles["sidebar-tail"]}>
+          <div className={styles["sidebar-actions"]}>
+            <span className={styles["sidebar-stat"]}>
+              {Locale.Home.StatFilterLabel}
+            </span>
+            <TimeDurationSelect
+              statTime={statTime.current}
+              onChange={loadStatSummary}
+              onClick={() => setIsShowStatList(false)}
+            />
+            <a className={styles["sidebar-stat"]} onClick={showStatList}>
+              {Locale.Home.OnlineCount(statInfo.userCnt)}
+            </a>
+            <a className={styles["sidebar-stat"]} onClick={showStatList}>
+              {Locale.Home.MsgCount(statInfo.questCnt)}
+            </a>
+          </div>
         </div>
-      </div>
       )}
 
       {isShowLoginLoading && (
@@ -401,9 +405,7 @@ export function SideBar(props: {
               />
             </div>
             <div>{Locale.Home.OnlineCount(statList.userCnt)}</div>
-            <div>
-              {Locale.Home.MsgCount(statList.questCnt)}
-            </div>
+            <div>{Locale.Home.MsgCount(statList.questCnt)}</div>
           </div>
           <div className={styles["stat-list-data"]}>
             <table>
@@ -416,16 +418,14 @@ export function SideBar(props: {
                 </tr>
               </thead>
               <tbody>
-                {statList.quests.map(
-                  ({ name, questCnt, questTime }, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{name}</td>
-                      <td>{getDisplayTime(parseInt(questTime))}</td>
-                      <td>{questCnt}</td>
-                    </tr>
-                  ),
-                )}
+                {statList.quests.map(({ name, questCnt, questTime }, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{name}</td>
+                    <td>{getDisplayTime(parseInt(questTime))}</td>
+                    <td>{questCnt}</td>
+                  </tr>
+                ))}
               </tbody>
               <tfoot>
                 <tr>

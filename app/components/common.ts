@@ -1,6 +1,7 @@
 import querystring from "querystring";
 import Locale from "../locales";
 import Profile from "../config/profile";
+import Sha256 from "crypto-js/sha256";
 
 // 公共的请求方法
 export async function request(options: {
@@ -24,8 +25,10 @@ export async function request(options: {
     opt.headers = Object.assign(opt.headers, options.headers);
   }
   if (options.data) {
-    if (['GET', 'HEAD'].includes(opt.method.toUpperCase())) {
-      options.url = `${options.url}${options.url.includes('?') ? '&' : '?'}${querystring.stringify(options.data)}`;
+    if (["GET", "HEAD"].includes(opt.method.toUpperCase())) {
+      options.url = `${options.url}${
+        options.url.includes("?") ? "&" : "?"
+      }${querystring.stringify(options.data)}`;
     } else {
       opt.body = JSON.stringify(options.data);
     }
@@ -36,13 +39,15 @@ export async function request(options: {
 
 // 获取在线统计（定时执行）
 export function loadOnlineUser(userId: string, statTime: number) {
-  return isAdmin() ? request({
-    url: Profile.OnlineUserApi,
-    data: { userId, statTime },
-  }) : request({
-    url: Profile.UserCodeApi,
-    data: { userId },
-  });
+  return isAdmin()
+    ? request({
+        url: Profile.OnlineUserApi,
+        data: { userId, statTime },
+      })
+    : request({
+        url: Profile.UserCodeApi,
+        data: { userId },
+      });
 }
 
 // 获取在线统计清单
@@ -137,7 +142,12 @@ export function getUserCode() {
 
 // 设置企业微信code到缓存
 export function setUserCode(code: any) {
-  localStorage.setItem("ww_code", code);
+  localStorage.setItem("ww_code", Sha256(code).toString());
+}
+
+// 是否
+export function isLoginUser(code: any) {
+  return Sha256(code).toString() === localStorage.getItem("ww_code");
 }
 
 // 清除用户缓存
